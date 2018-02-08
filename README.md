@@ -21,3 +21,17 @@ Otherwise, there may be the risk of not being able to dedicate enough time for t
 
 # Second Examiner
 Typically, the second examiner gets chosen after the thesis is handed in and defended. To have the chance to personally convince the second examiner with your great defence presentation make the person has to be picked already. To that end, consider reminding Prof. Baudisch – not only early, but also often – about picking a second examiner.
+
+# Getting started
+
+Run `pdflatex masterthesis.tex`.
+
+## Installing dirtytalk
+On Windows when using MiKTeX you will have to install the package `dirtytalk` manually.
+1. Download it from here https://www.ctan.org/pkg/dirtytalk
+2. On MiKTeX, after you've unzipped  `dirtytalk.zip` in some directory, you'll have to compile the file `dirtytalk.ins` to produce `dirtytalk.sty`. To do this run `latex dirtytalk.ins`.
+3. To make it usable, if you made an installation for all users, create a TeXMFlocal directory (not in MiKTeX roots) if not already done, and declare as `root` with `MiKTeX Settings(Admin)`, `Root tab`, with the `Add…` button, like this: 
+4. Then copy `dirtytalk.sty` in `TeXMFlocal\tex\latex\dirtytalk\`, and `dirtytalk.pdf` in `TeXMFlocal\latex\doc\dirtytalk\`.
+5. Finally, refresh the FNDB (under `General` tab).
+6. If you made a per-user installation do the same with `MiKTeX Settings`.
+These instructions were taken from https://tex.stackexchange.com/a/329815.
