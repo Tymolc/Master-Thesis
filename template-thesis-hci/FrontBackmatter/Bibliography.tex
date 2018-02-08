@@ -1,0 +1,20 @@
+%********************************************************************
+% Bibliography
+%*******************************************************
+% work-around to have small caps also here in the headline
+\manualmark
+\markboth{\spacedlowsmallcaps{\bibname}}{\spacedlowsmallcaps{\bibname}} % work-around to have small caps also
+%\phantomsection
+\refstepcounter{dummy}
+\addtocontents{toc}{\protect\vspace{\beforebibskip}} % to have the bib a bit from the rest in the toc
+\addcontentsline{toc}{chapter}{\tocEntry{\bibname}}
+\bibliographystyle{acm}
+\label{app:bibliography}
+\bibliography{Bibliography}
+
+   % % bib stuff
+   %  \nocite{*}
+   %  \addtocontents{toc}{\protect\vspace{\beforebibskip}}
+   %  \addcontentsline{toc}{section}{\refname}
+   %  \bibliographystyle{plain}
+   %  \bibliography{../Bibliography}
