@@ -24,10 +24,21 @@ Typically, the second examiner gets chosen after the thesis is handed in and def
 
 # Getting started
 
-Run `pdflatex masterthesis.tex`.
+To clone this repo run
+```
+git clone git@bitbucket.org:hpihci/template-thesis-hci.git
+```
+
+To generate masterthesis.pdf run
+```
+cd latex
+pdflatex masterthesis.tex
+```
 
 ## Installing dirtytalk
+
 On Windows when using MiKTeX you will have to install the package `dirtytalk` manually.
+
 1. Download it from here https://www.ctan.org/pkg/dirtytalk
 2. On MiKTeX, after you've unzipped  `dirtytalk.zip` in some directory, you'll have to compile the file `dirtytalk.ins` to produce `dirtytalk.sty`. To do this run `latex dirtytalk.ins`.
 3. To make it usable, if you made an installation for all users, create a TeXMFlocal directory (not in MiKTeX roots) if not already done, and declare as `root` with `MiKTeX Settings(Admin)`, `Root tab`, with the `Add…` button, like this: 
