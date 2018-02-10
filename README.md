@@ -35,6 +35,8 @@ cd latex
 pdflatex masterthesis.tex
 ```
 
+Customize `latex/classicthesis-config.tex` to your needs.
+
 ## Installing dirtytalk
 
 On Windows when using MiKTeX you will have to install the package `dirtytalk` manually.
