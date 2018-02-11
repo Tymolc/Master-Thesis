@@ -23,11 +23,15 @@ Otherwise, there may be the risk of not being able to dedicate enough time for t
 Typically, the second examiner gets chosen after the thesis is handed in and defended. To have the chance to personally convince the second examiner with your great defence presentation make the person has to be picked already. To that end, consider reminding Prof. Baudisch – not only early, but also often – about picking a second examiner.
 
 # Getting started
+To start your own repo for your thesis, run the following commands in a terminal:
 
-To clone this repo run
 ```
-git clone git@bitbucket.org:hpihci/template-thesis-hci.git
+git init mythesis
+cd mythesis
+git pull git@bitbucket.org:hpihci/template-thesis-hci.git master
 ```
+
+You can also use the last command to update your copy of the template.
 
 To generate masterthesis.pdf run
 ```
