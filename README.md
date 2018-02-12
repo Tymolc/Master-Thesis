@@ -33,10 +33,13 @@ git pull git@bitbucket.org:hpihci/template-thesis-hci.git master
 
 You can also use the last command to update your copy of the template.
 
-To generate masterthesis.pdf run
+To generate ClassicThesis.pdf run
 ```
 cd latex
-pdflatex masterthesis.tex
+pdflatex ClassicThesis
+bibtex ClassicThesis
+pdflatex ClassicThesis
+pdflatex ClassicThesis
 ```
 
 Customize the following files:
@@ -45,6 +48,12 @@ Customize the following files:
 - `latex/FrontBackmatter/Acknowledgments`
 - `latex/FrontBackmatter/Contents` acronyms section
 - `latex/FrontBackmatter/Dedication`
+
+Now you can go on filling the `chapters/*.tex` with content.
+
+## References
+
+Put your references into `Bibliography.bib`. You can manage them using e.g. `zotero` or `jabref`.
 
 ## Installing dirtytalk
 
