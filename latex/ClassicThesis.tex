@@ -46,12 +46,16 @@
 % Bibliographies
 %*******************************************************
 \addbibresource{Bibliography.bib}
-\addbibresource[label=ownpubs]{AMiede_Publications.bib}
 
 %********************************************************************
 % Hyphenation
 %*******************************************************
 %\hyphenation{put special hyphenation here}
+
+%********************************************************************
+% \includegraphics may be use relative to this path, so you don't always have to write the full path
+%*******************************************************
+\graphicspath{{./Figures/}}
 
 % ********************************************************************
 % GO!GO!GO! MOVE IT!
@@ -64,6 +68,7 @@
 %\setbibpreamble{}
 \pagenumbering{roman}
 \pagestyle{plain}
+
 %********************************************************************
 % Frontmatter
 %*******************************************************
@@ -73,9 +78,11 @@
 \cleardoublepage\include{FrontBackmatter/Dedication}
 %\cleardoublepage\include{FrontBackmatter/Foreword}
 \cleardoublepage\include{FrontBackmatter/Abstract}
-\cleardoublepage\include{FrontBackmatter/Publications}
+%\cleardoublepage\include{FrontBackmatter/Publications} % Include this if this thesis contains things that you published earlier.
 \cleardoublepage\include{FrontBackmatter/Acknowledgments}
 \cleardoublepage\include{FrontBackmatter/Contents}
+
+
 %********************************************************************
 % Mainmatter
 %*******************************************************
@@ -85,36 +92,31 @@
 %\setcounter{page}{90}
 % use \cleardoublepage here to avoid problems with pdfbookmark
 \cleardoublepage
-\part{Some Kind of Manual}\label{pt:manual}
-\include{Chapters/Chapter01}
-\cleardoublepage
-\ctparttext{You can put some informational part preamble text here.
-Illo principalmente su nos. Non message \emph{occidental} angloromanic
-da. Debitas effortio simplificate sia se, auxiliar summarios da que,
-se avantiate publicationes via. Pan in terra summarios, capital
-interlingua se que. Al via multo esser specimen, campo responder que
-da. Le usate medical addresses pro, europa origine sanctificate nos se.}
-\part{The Showcase}\label{pt:showcase}
-\include{Chapters/Chapter02}
-%\addtocontents{toc}{\protect\clearpage} % <--- just debug stuff, ignore
-\include{Chapters/Chapter03}
-%\include{multiToC} % <--- just debug stuff, ignore for your documents
+
+%\cleardoublepage\include{Chapters/00-Examples} % Use this as a reference to find out how things are done.
+
+\cleardoublepage\include{Chapters/01-Introduction} % 3-4 pages
+\cleardoublepage\include{Chapters/02-Related-Work} % 6-8 pages
+\cleardoublepage\include{Chapters/03-Walkthrough} % 5-8 pages
+\cleardoublepage\include{Chapters/04-Hardware} % 5-10 pages
+\cleardoublepage\include{Chapters/05-Implementation} % 25-30 pages This is what the Zweitkorrektor probably will focus on. Make it count!
+\cleardoublepage\include{Chapters/06-Conclusion} % 2-4 pages
+
 % ********************************************************************
 % Backmatter
 %*******************************************************
-\appendix
+% If you want to have an appendix uncomment the lines below
+%\appendix
 %\renewcommand{\thechapter}{\alph{chapter}}
-\cleardoublepage
-\part{Appendix}
-\include{Chapters/Chapter0A}
+%\cleardoublepage
+% \include{Chapters/99-Appendix}
+
 %********************************************************************
 % Other Stuff in the Back
 %*******************************************************
 \cleardoublepage\include{FrontBackmatter/Bibliography}
 \cleardoublepage\include{FrontBackmatter/Declaration}
 \cleardoublepage\include{FrontBackmatter/Colophon}
-% ********************************************************************
-% Game Over: Restore, Restart, or Quit?
-%*******************************************************
+
 \end{document}
 % ********************************************************************

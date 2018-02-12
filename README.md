@@ -39,7 +39,12 @@ cd latex
 pdflatex masterthesis.tex
 ```
 
-Customize `latex/classicthesis-config.tex` to your needs.
+Customize the following files:
+- `latex/classicthesis-config.tex`
+- `latex/FrontBackmatter/Abstract`
+- `latex/FrontBackmatter/Acknowledgments`
+- `latex/FrontBackmatter/Contents` acronyms section
+- `latex/FrontBackmatter/Dedication`
 
 ## Installing dirtytalk
 

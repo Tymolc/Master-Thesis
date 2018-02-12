@@ -81,6 +81,7 @@
 %\setbibpreamble{}
 \pagenumbering{roman}
 \pagestyle{plain}
+
 %********************************************************************
 % Frontmatter
 %*******************************************************
@@ -99,7 +100,12 @@
 %********************************************************************
 % Mainmatter
 %*******************************************************
+\cleardoublepage
+\pagestyle{scrheadings}
 \pagenumbering{arabic}
+%\setcounter{page}{90}
+% use \cleardoublepage here to avoid problems with pdfbookmark
+\cleardoublepage\pagenumbering{arabic}
 %\setcounter{page}{90}
 % use \cleardoublepage here to avoid problems with pdfbookmark
 \cleardoublepage
@@ -195,6 +201,4 @@ In this section we present the overall architecture of our system as well as spe
 \cleardoublepage\include{FrontBackmatter/Bibliography}
 \cleardoublepage\include{FrontBackmatter/Declaration}
 
-%*******************************************************
 \end{document}
-% ********************************************************************
