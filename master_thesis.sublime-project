@@ -1,0 +1,33 @@
+{
+	"folders":
+	[
+		{
+			"path": ".",
+            "file_exclude_patterns":
+            [
+                "*.aux",
+                "*.fls",
+                "*.log",
+                "*.fdb_latexmk",
+                "*.bbl",
+                "*.blg",
+                "*.dvi",
+                "*.lof",
+                "*.lol",
+                "*.lot",
+                "*.out",
+                "*.gz",
+                "*.tcp",
+                "*.toc",
+                "*.tps",
+                "*.xml"
+            ],
+		},
+	],
+    "settings":
+    {
+        "font_face": "Fira Code",
+        "spell_check": true,
+        "dictionary": "Packages/Language - English/en_US.dic"
+    }
+}
