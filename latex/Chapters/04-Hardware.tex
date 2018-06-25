@@ -1,9 +1,26 @@
 \chapter{Hardware}\label{ch:hardware}
-\section{Something about 3D printers?}
+- chapter will talk about challenges we faced in finding stable connectors\\
+- material used: PLA (biodegradable, sturdy enough, ...)\\
+- assembled based on ID system\\
+- no special requirements to printer\\
+- we used: UltiMaker3, UltiMaker2 and \info{remember name of other printer}
 \section{Building Parts}
+We can differentiate between three essential building parts for our truss structures. \textit{Links} are the connecting and shaping parts. We used PET bottles for these parts, because they are readily available, cheap and sturdy.\\
+These links can be connected in two different ways. If the truss primitive \improvement{make sure people understand what that means} is static, i.e. it does not allow deformation, we connect them by \textit{hubs}. Hubs are single-part connectors for an arbitrary number of edges. They do not allow movement.\\
+If the structure is intended to allow deformation, we can not use this single-part approach. In this case, movement is created having multiple parts that can hinge around each other. These \textit{hinge chains} are generated according to the number of edges connected to the node and the angle of each edge relative to each other edge. In contrast to hubs, hinge chains have to be assembled manually using nuts and bolts.\\
+Links and hubs or hinge chains, respectively, are connected by specially-printed connecting \textit{cuffs}, which fit over the bottles thread and a fitting counter-part on the connecting end of the node.
 \subsection{Links}
+We opted to use 1l (big) and 0.5l (small) reusable PET bottles because of their intrinsic stability and abundant availability. Two bottles are connected on their bottom side by a wood screw, which is inserted using a special long-necked screwdriver. The resulting link-lengths are:
+\begin{enumerate}
+\item 60 cm - two big bottles
+\item 53 cm - one big and one small bottle
+\item 46 cm - two small bottles
+\end{enumerate}
+\subsection{Cuffs}
 \subsection{Hubs}
-\subsection{Hinges}
+\subsection{Hinge Chains}
+- beginning: open hinge chains\\
+- later: closed hinge loops
 \section{Controls}
 \subsection{Electric vs. Pneumatic Actuators}
 \subsection{Open Loop vs. Closed Loop}
