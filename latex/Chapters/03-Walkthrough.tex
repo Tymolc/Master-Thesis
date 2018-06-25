@@ -8,15 +8,25 @@
 - placing primitives with variable geometry trusses\\
 - demonstrate movement tool\\
 \subsection{Force Analysis}
-- check tension force on edges
-- check acceleration and speed on nodes
-- add loads to object
-- check tension while moving
-- automatically fix movement when object is exceeding force
+- check tension force on edges\\
+- check acceleration and speed on nodes\\
+- add loads to object\\
+- check tension while moving\\
+- automatically fix movement when object is exceeding force\\
 \section{Controlling the Structure}
-- closed-loop control -> more sophisticated and complex movements possible
+- closed-loop control -> more sophisticated and complex movements possible\\
 \subsection{PID Control}
+- short intro: how does PID work?\\
+- how do we use it?\\
+- i.e. position control of actuators\\
+- forward reference to section 4 (setup of length measurement)\\
 \section{Building the Final Object}
+After the object was sufficiently tested in the editor, it is time to print the connectors and assemble the final object.
 \subsection{OpenSCAD}
+At first, our abstract description of the object has to be converted into a physical representation. In order to achieve this, we used a modeling language called \textit{OpenSCAD}. The \textit{Export Hubs and Hinges} button will automatically morph the structure into a statically sound object, i.e. it will elongate and shorten edges so, that the ideal amount of movement is possible. \improvement{This needs to be more detailed for sure!!}\\
+The resulting arrangement of nodes and edges will be transferred to OpenSCAD. Using templates, we can create parameterized representations of hubs and hinges, which, when assembled, will exactly represent the object in the editor. This will be explained in more detail in \ref{sec:openscad_impl}.
 \subsection{Printing the Parts}
+Each OpenSCAD file represents a single part in the structure. These files can easily be converted to \textit{.stl} files \improvement{put conversion script in here somehow}, which are typically used for 3D printing. These files have to be imported into any 3D printing software, arranged efficiently and send to a 3D printer. \unsure{add some time reference here?}
 \subsection{Assembling the Structure}
+The resulting hubs and hinges contain an ID system for easy assembly. Each part of a node has the node ID printed on. That way it is easy to find out which hinge-parts belong together. Additionally, each ``extended'' edge-line (elongation) \info{Verlängerung einer Edge, also quasi die Elongation. FIND A BETTER NAME!} contains the id of the connected edge. A compound elongation, which is the usual case for a hinge, is therefore assembled by finding two parts with the same node and edge ID. For static hubs, this concept is similar, but of course these do not have to be assembled.\\
+Two connectors with different node IDs but the same edge IDs will be connected by a link.
