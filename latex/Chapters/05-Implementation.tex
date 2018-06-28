@@ -1,5 +1,33 @@
 \chapter{Implementation}\label{ch:implementation}
+We implemented \trussFabName{} as a plug-in for the 3D modeling software \textit{SketchUp}. It is primarily written in Ruby and JavaScript.\unsure{Do we assume TrussFormer is a new product, which uses similar functionality as TrussFab, or do we say it is an improvement?}
+\section{Architecture}
+The software can be divided into four components. The most user-facing one is the designer. The other components handle the physics simulation of the created structures, minimization logic for the created hubs and hinges and the 3D print export.\\
+Designer:\\
+- designer keeps track of connections between components\\
+- written in ruby\\
+- components stored in graph structure \unsure{show diagram?}\\
+- tight coupling to SketchUp (uses SketchUp Elements, SketchUp rendering engine, ...)\unsure{Maybe the details should be subsections?}
+Physics Simulation:\\
+- Based on \textit{MSPhysics} by Anton Synytsia
+- Ruby wrapper around C++ physics engine \textit{Newton Dynamics}
+- Implemented as a \textit{SketchUp Animation}
+- implements \textit{nextFrame} method
+- this method is called every time SketchUp has finished rendering a frame
+- this method does:
+\begin{enumerate}
+    \item tell Sketchup to render new frame (SketchUp will render the positions calculated in the previous world update: make use of calculate new update while sketchup already renders new positions)
+    \item call \textit{update\_world}, which does, world\_iterations times:
+    \begin{itemize}
+        \item update forces, i.e. call apply predetermined forces (e.g. weights on hubs, calculations of PID controller)
+        \item call \textit{world.advance}: Tell MSPhysics, that a new world update is available and let it calculate new forces after positional updates
+        \item record tensions on links, for visualization later. This has to be recorded, because for each render step, a number of world updates are done. We don't want to miss crucial force updates
+        \item visualize forces: send color information to SketchUp, indicating the strength of the tension on links
+    \end{itemize}
+    \item update entity positions: tell SketchUp where components have to be rendered next time
+    \item send data to ui: send sensor data to ui charts, if needed
+\end{enumerate}
 \section{TrussFab Designer}
+The TrussFab Designer provides static sketching functionalities. It can create and display different predefined models, has knowledge about the connections of different components and can modify the resulting objects structure.
 \subsection{User Interface}
 \subsection{Structure Creation}
 \subsection{Modifying the Structure}
