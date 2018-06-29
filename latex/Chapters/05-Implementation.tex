@@ -1,12 +1,15 @@
 \chapter{Implementation}\label{ch:implementation}
 We implemented \trussFabName{} as a plug-in for the 3D modeling software \textit{SketchUp}. It is primarily written in Ruby and JavaScript.\unsure{Do we assume TrussFormer is a new product, which uses similar functionality as TrussFab, or do we say it is an improvement?}
+
 \section{Architecture}
 The software can be divided into four components. The most user-facing one is the designer. The other components handle the physics simulation of the created structures, minimization logic for the created hubs and hinges and the 3D print export.\\
+\\
 Designer:\\
 - designer keeps track of connections between components\\
 - written in ruby\\
 - components stored in graph structure \unsure{show diagram?}\\
-- tight coupling to SketchUp (uses SketchUp Elements, SketchUp rendering engine, ...)\unsure{Maybe the details should be subsections?}
+- tight coupling to SketchUp (uses SketchUp Elements, SketchUp rendering engine, ...)\unsure{Maybe the details should be subsections?}\\
+\\
 Physics Simulation:\\
 - Based on \textit{MSPhysics} by Anton Synytsia
 - Ruby wrapper around C++ physics engine \textit{Newton Dynamics}
@@ -26,14 +29,43 @@ Physics Simulation:\\
     \item update entity positions: tell SketchUp where components have to be rendered next time
     \item send data to ui: send sensor data to ui charts, if needed
 \end{enumerate}
+Minimization Logic:\\
+- elongates and shortens edges so that maximum movement is possible with minimum material use\\
+- uses iterative relaxation algorithm, will be explained in \ref{relaxation}\\
+
 \section{TrussFab Designer}
 The TrussFab Designer provides static sketching functionalities. It can create and display different predefined models, has knowledge about the connections of different components and can modify the resulting objects structure.
+
 \subsection{User Interface}
+
 \subsection{Structure Creation}
+Terminology:\\
+\begin{enumerate}
+    \item Edge:
+    \begin{enumerate}
+        \item Connects two nodes
+        \item Can be:
+        \begin{enumerate}
+            \item Bottle Link
+            \item Actuator
+            \item PID link
+        \end{enumerate}
+    \end{enumerate}
+\end{enumerate}
+
 \subsection{Modifying the Structure}
+
+\subsection{Relaxation Algorithm}\label{relaxation}
+
 \subsection{OpenSCAD Export}\label{sec:openscad_impl}
+
 \section{TrussFormer Physics Engine}
+
 \subsection{Simulation}
+- only hubs are simulated to improve performance
+
 \subsection{Automatic Actuator Placement (if it works soon-ish)}
+
 \section{Force Control}
+
 \subsection{PID}
