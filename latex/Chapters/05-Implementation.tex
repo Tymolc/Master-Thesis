@@ -6,9 +6,10 @@ The software can be divided into four components. The most user-facing one is th
 \\
 \subsection{Designer}
 All components are stored in a graph structure. The building parts are \textit{Edges}, \textit{Nodes} and \textit{Triangles}. They all inherit \textit{GraphObject}. The purpose of these objects is providing user-facing functionalities and storing lower-level components. An overview of the graph structure can be seen in \ref{fig:graph}.\\
-The \textit{Graph} is implemented as a Singleton \improvement{explain what a Singleton is} that stores and provides access to all GraphObjects, creates new ones and provides convenience functions for user interactions, such as finding the node closest to the mouse cursor. As this class is a singleton, every module of the software has access to the objects. Each SketchUp object has access to its underlying logic-bearing component, called \textit{SketchupObject}.\improvement{Clarify. Either explain what that means (Hubs, Links, Surfaces) or at least have a forward reference} The access to this functionality is, however, not implemented in this superclass, but in each subclass, having the specific name. This design decision was made to improve code readability and coding errors by accessing the wrong SketchupObject.\improvement{Show before and after code snippet}\\
+The \textit{Graph} is implemented as a Singleton \improvement{explain what a Singleton is} that stores and provides access to all GraphObjects, creates new ones and provides convenience functions for user interactions, such as finding the node closest to the mouse cursor. As this class is a singleton, every module of the software has access to the objects.\\
+Each of these objects has access to its underlying logic-bearing component, called \textit{SketchupObject}.\improvement{Clarify. Either explain what that means (Hubs, Links, Surfaces) or at least have a forward reference} The access to this functionality is, however, not implemented in this superclass, but in each subclass, having the specific name as an accessor. This design decision was made to improve code readability, and decrease coding errors caused by accessing the wrong SketchupObject.\improvement{Show before and after code snippet}\\
 \begin{figure}
-    \includegraphics[width=\textwidth]{implementation/TrussFab_Graph.png}
+    \includegraphics[width=\textwidth]{Implementation/TrussFab_Graph.png}
     \centering
     \caption{Class Diagram showing the high-level Graph Structure of the TrussFab Designer}
     \label{fig:graph}
@@ -41,8 +42,10 @@ The responsibility of the GraphObject class is primarily unifying the way the ap
     delete
   end
 \end{lstlisting}\label{merging_code}
-Another component that is tightly coupled to Nodes are \textit{Pods}. A Pod acts as a stand for the object and tells TrussFab that this Node should not change its position.\todo{add image}
-\\- tight coupling to SketchUp (uses SketchUp Elements, SketchUp rendering engine, ...)\unsure{Maybe the details should be subsections?}\\
+Another component that is tightly coupled to Nodes are \textit{Pods}. A Pod acts as a stand for the object and tells TrussFab that this Node should not change its position.\todo{add image}\\
+The \textit{Edges} are the most visual components of TrussFab. They are visualized by bottles of different lengths, if they are static links, or as two cylinders forming an actuator, if they can have variable lengths. The Edges handle creating the correct model and changing it if the user decides to place a different kind of Edge. Edges play a big role in the simulation.
+The last high-level component in TrussFab is the \textit{Triangle}. A Triangle is primarily used as a convenient access to multiple Nodes or Edges. Most tools that work on Nodes, such as the \textit{Add Weight Tool}, can also be applied to Triangles, adding weight to all three connected Nodes. The Triangle also provides functions for telling the \textit{MouseInput} in where a certain face is directed.\improvement{IMPROVE!}
+\\- tight coupling to SketchUp (uses SketchUp Elements, SketchUp rendering engine, ...)
 \subsection{Physics Simulation}
 - Based on \textit{MSPhysics} by Anton Synytsia
 - Ruby wrapper around C++ physics engine \textit{Newton Dynamics}
