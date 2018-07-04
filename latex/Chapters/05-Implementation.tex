@@ -15,7 +15,7 @@ Each of these objects has access to its underlying logic-bearing component, call
     \label{fig:graph}
 \end{figure}
 The responsibility of the GraphObject class is primarily unifying the way the appearance in SketchUp of the underlying object can be changed as much as possible. This includes highlighting a specific object if the mouse hovers over it, resetting the object to its default state and creating and deleting it. More complex methods need to be implemented in the respective subclass.\\
-\textit{Nodes} are the connecting components of the structure. \textit{Edges}, as well as \textit{Triangles} are created based on Nodes. Apart from storing adjacent Edges and Triangles, a Node can specify their positions in the SketchUp world. The Nodes' adjacent objects constantly check if their position has changed and update their SketchUp representation accordingly. If the structure is deformed in such a way that a Node will be at the same position as another one, the Node object can automatically merge into the other Node. The Node will iterate over all its adjacent Edges and tell each one, apart from the Edges that run from the other Node to the Edge the Node is hinging around (i.e. the Edge that is opposite the Node), to exchange itself with the Node it wants to merge into. These Edges are removed from its own adjacent Edges and added to the collection of the new Node. The same happens for all adjacent Triangles. As a last step, the Node deletes itself and all remaining adjacent Edges and Triangles (which will be the Edges and Triangles that got merged). The object will then be adapted according to the new positions using the \textit{Relaxation algorithm}, described in section \ref{relaxation}.\\
+\textit{Nodes} are the connecting components of the structure. \textit{Edges}, as well as \textit{Triangles} are created based on Nodes. Apart from storing adjacent Edges and Triangles, a Node can specify their positions in the SketchUp world. The Nodes' adjacent objects constantly check if their position has changed and update their SketchUp representation accordingly. If the structure is deformed in such a way that a Node will be at the same position as another one, the Node object can automatically merge into the other Node. The Node will iterate over all its adjacent Edges and tell each one, apart from the Edges that run from the other Node to the Edge the Node is hinging around (i.e. the Edge that is opposite the Node), to exchange itself with the Node it wants to merge into. These Edges are removed from its own adjacent Edges and added to the collection of the new Node. The same happens for all adjacent Triangles. As a last step, the Node deletes itself and all remaining adjacent Edges and Triangles (which will be the Edges and Triangles that got merged). The object will then be adapted according to the new positions using the \textit{Relaxation algorithm}, described in section \ref{sec:relaxation}.\\
 \clearpage
 \begin{lstlisting}[language=Ruby, caption=Merging of two Nodes]
   def merge_into(other_node)
@@ -45,7 +45,12 @@ The responsibility of the GraphObject class is primarily unifying the way the ap
 Another component that is tightly coupled to Nodes are \textit{Pods}. A Pod acts as a stand for the object and tells TrussFab that this Node should not change its position.\todo{add image}\\
 The \textit{Edges} are the most visual components of TrussFab. They are visualized by bottles of different lengths, if they are static links, or as two cylinders forming an actuator, if they can have variable lengths. The Edges handle creating the correct model and changing it if the user decides to place a different kind of Edge. Edges play a big role in the simulation.
 The last high-level component in TrussFab is the \textit{Triangle}. A Triangle is primarily used as a convenient access to multiple Nodes or Edges. Most tools that work on Nodes, such as the \textit{Add Weight Tool}, can also be applied to Triangles, adding weight to all three connected Nodes. The Triangle also provides functions for telling the \textit{MouseInput} in where a certain face is directed.\improvement{IMPROVE!}
-\\- tight coupling to SketchUp (uses SketchUp Elements, SketchUp rendering engine, ...)
+\subsection{SketchupObjects}
+As mentioned before, each GraphObject contains a lower-level \textit{SketchupObject}. These objects are responsible for more complex, lower-level tasks, such as physics calculations, rendering and communication to the simulation engine.\\
+Each SketchupObject has a \textit{Sketchup::Entity}, which is a class provided by SketchUp that is capable of handling the representation in SketchUp itself. This includes changing the color of the model, hiding and transforming. On creation, each SketchupObject is also persisted in the entity\todo{find out why exactly I did that}.
+\subsubsection{Hubs}
+\textit{Hubs} are the underlying structures used by Nodes. For ease of calculation and increased performance of the \textit{Simulation} (s.a. section \ref{sec:simulation}), only the Hubs of a structure have physical properties. Hubs therefore have to store information about the object, such as the weight. The weight is calculated based on the number of bottle links and actuators connected to this node. For our system, we measured these values empirically by taking the weight of a screw and half the weight of a bottle link or an actuator per connection and adding it to the average weight of an empty printed hub. The \textit{add weight} and \textit{add force} tools will additionally increase this value, while the Hub also displays the indicators for these tools.\\
+These values, together with a few other variables, then form the basis of our simulated structure.
 \subsection{Physics Simulation}
 - Based on \textit{MSPhysics} by Anton Synytsia
 - Ruby wrapper around C++ physics engine \textit{Newton Dynamics}
@@ -67,7 +72,7 @@ The last high-level component in TrussFab is the \textit{Triangle}. A Triangle i
 \end{enumerate}
 \subsection{Minimization Logic}
 - elongates and shortens edges so that maximum movement is possible with minimum material use\\
-- uses iterative relaxation algorithm, will be explained in \ref{relaxation}
+- uses iterative relaxation algorithm, will be explained in \ref{sec:relaxation}
 
 \subsection{Export}
 
@@ -93,13 +98,13 @@ Terminology:\\
 
 \subsection{Modifying the Structure}
 
-\subsection{Relaxation Algorithm}\label{relaxation}
+\subsection{Relaxation Algorithm}\label{sec:relaxation}
 
 \subsection{OpenSCAD Export}\label{sec:openscad_impl}
 
 \section{TrussFormer Physics Engine}
 
-\subsection{Simulation}
+\subsection{Simulation}\label{sec:simulation}
 - only hubs are simulated to improve performance
 
 \subsection{Automatic Actuator Placement (if it works soon-ish)}
