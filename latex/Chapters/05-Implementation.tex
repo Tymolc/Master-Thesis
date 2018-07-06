@@ -81,12 +81,10 @@ The Link is therefore responsible for defining the distance between two Hubs. Be
 \subsubsection{Surface}
 The \textit{Surface} is primarily used to visualize what face of the truss the user is currently selecting, by changing the color between three bottles. It can also hold a cover, which has mainly optical purposes, i.e. a user can cover up a surface with a sheet of wood if they want to have this surface closed up after building.
 
-\subsection{Physics Simulation}\label{sec:simulation}
+\section{Physics Simulation}\label{sec:simulation}
 TrussFabs' force analysis used to be based on \textit{Finite Element Analysis}, calculated asynchronously on a remote server. This provided fairly accurate results and did not require a powerful computer to run. However, TrussFabs' responsibilities evolved during the course of its life and we decided to implement a real-time physics engine inside of our plug-in.\\
 We decided to use the SketchUp plug-in \textit{MSPhysics} by Anton Synytsia\footnote{https://github.com/AntonSynytsia/}. MSPhysics is capable of calculating real-time physics on SketchUp elements and creates a customizable physics world in the modeling software. This MSPhysics world has parameters, like gravity, update timestep, and solver model which we can adapt to maximize accuracy and speed of the simulation.\\
 The simulation uses the animation feature of SketchUp. A ruby class can act as a Sketchup::Animation when it implements the \textit{nextFrame} method, which must return true until the animation ends. This method is called every time SketchUp receives the signal that a new frame should be rendered. We do that by calling \textit{view.show\_frame} (s.a. listing \ref{lst:simulation}), which will trigger SketchUp to start rendering the next frame based on the simulation updates that happened earlier. We call this function as the first step in our nextFrame method, because this way, SketchUp can start rendering, while our simulation does the next physics update.\\
-During this update, the physics engine calculates new forces on each physics component of the built object. For that, first all static forces are applied to the object. These are forces added by the \textit{Add Force Tool} or static forces calculated by the \textit{GenericPointToPoint} joints. Using these values and all other intrinsic parameters included in the physics objects, we call the entry point to our MSPhysics plug-in. The \textit{@world.advance} function calculates the change of forces and positions from one timestep to another. In our physics world, one timestep correlates to 1/60s, to achieve realistically timed results assuming that SketchUp itself runs with 60 frames per second.\\
-After each world update, the tensions on each link are recorded for visualizing them later. This has to be done, because there could potentially be multiple world updates per render step and we do not want to miss crucial forces.
 \begin{lstlisting}[language=Ruby, label={lst:simulation}, caption=Simulation nextFrame method]
 def nextFrame(view)
     view.show_frame
@@ -106,30 +104,29 @@ def nextFrame(view)
     @running
 end
 \end{lstlisting}
-- this method does:
-\begin{enumerate}
-    \item tell Sketchup to render new frame (SketchUp will render the positions calculated in the previous world update: make use of calculate new update while sketchup already renders new positions)
-    \item call \textit{update\_world}, which does, world\_iterations times:
-    \begin{itemize}
-        \item update forces, i.e. call apply predetermined forces (e.g. weights on hubs, calculations of PID controller)
-        \item call \textit{world.advance}: Tell MSPhysics, that a new world update is available and let it calculate new forces after positional updates
-        \item record tensions on links, for visualization later. This has to be recorded, because for each render step, a number of world updates are done. We don't want to miss crucial force updates
-        \item visualize forces: send color information to SketchUp, indicating the strength of the tension on links
-    \end{itemize}
-    \item update entity positions: tell SketchUp where components have to be rendered next time
-    \item send data to ui: send sensor data to ui charts, if needed
-\end{enumerate}
-
-\subsection{Minimization Logic}
+During this update, the physics engine calculates new forces on each physics component of the built object. For that, first all static forces are applied to the object. These are forces added by the \textit{Add Force Tool} or static forces calculated by the \textit{GenericPointToPoint} joints. Using these values and all other intrinsic parameters included in the physics objects, we call the entry point to our MSPhysics plug-in. The \textit{@world.advance} function calculates the change of forces and positions from one timestep to another. In our physics world, one timestep correlates to 1/60s, to achieve realistically timed results assuming that SketchUp itself runs with 60 frames per second.\\
+After each world update, the tensions on each link are recorded for visualizing them later. This has to be done, because there could potentially be multiple world updates per render step and we do not want to miss crucial forces.\\
+These steps in \textit{update\_world} are done for a specified number of times. In regular animation mode, one world update is calculated per frame, however some tools use the simulation in the background for static checks or other calculations. These tools do not need to display the in-between steps, so they can calculate multiple world updates back-to-back.\\
+With the knowledge of the new physics calculations, we can send information about the stress level of each joint to SketchUp. We color the links depending on the tension force on them. A blue color means negative tension force, i.e. pulling force, while red color means positive force, i.e. compressing force. The higher the force, the deeper the color gets.\\
+\begin{figure}[h!]
+    \includegraphics[width=\textwidth]{Implementation/Forces.png}
+    \centering
+    \caption{Visualization of forces acting on edges. Blue - tension force, red - compression force, white - little or no force}
+    \label{fig:sketchup_objects}
+\end{figure}
+Once the physics portion of the rendering step is done, our own graph structure has to be updated. For that, each edge and node updates their own positions and transformations based on their internal physics objects.\\
+As a last step, sensory data is send to the respective UIs in order to draw a chart depicting physical data.
+\section{Minimization Logic}
 - elongates and shortens edges so that maximum movement is possible with minimum material use\\
 - uses iterative relaxation algorithm, will be explained in \ref{sec:relaxation}
 
-\subsection{Export}
+\section{Export}
 
 \section{TrussFab Designer}
 The TrussFab Designer provides static sketching functionalities. It can create and display different predefined models, has knowledge about the connections of different components and can modify the resulting objects structure.
 
 \subsection{User Interface}
+The user interface is written in JavaScript.
 
 \subsection{Structure Creation}
 Terminology:\\
