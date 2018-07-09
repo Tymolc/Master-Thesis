@@ -115,7 +115,7 @@ With the knowledge of the new physics calculations, we can send information abou
     \label{fig:sketchup_objects}
 \end{figure}
 Once the physics portion of the rendering step is done, our own graph structure has to be updated. For that, each edge and node updates their own positions and transformations based on their internal physics objects.\\
-As a last step, sensory data is send to the respective UIs in order to draw a chart depicting physical data.
+As a last step, sensor data is send to the respective UIs in order to draw a chart depicting physical data.
 \section{Minimization Logic}
 - elongates and shortens edges so that maximum movement is possible with minimum material use\\
 - uses iterative relaxation algorithm, will be explained in \ref{sec:relaxation}
@@ -126,7 +126,48 @@ As a last step, sensory data is send to the respective UIs in order to draw a ch
 The TrussFab Designer provides static sketching functionalities. It can create and display different predefined models, has knowledge about the connections of different components and can modify the resulting objects structure.
 
 \subsection{User Interface}
-The user interface is written in JavaScript.
+The user interface (UI) is written in JavaScript. It uses SketchUps' built-in \textit{HtmlDialog} class, which lets us interact with HTML dialog boxes using the Ruby API\footnote{Application Programming Interface}. The HtmlDialog is a modified version of Googles' Chrome browser and supports modern HTML5 code, as well as state-of-the art JavaScript functionalities and extensions.\\
+Our user interface has four distinct modules:
+\begin{itemize}
+    \item the sidebar
+    \item the animation pane
+    \item force charts
+    \item context menus
+\end{itemize}
+
+Each of these modules consists of a number of HTML and JavaScript files, which implement the design and functionality of the UI elements, and one Ruby file. The Ruby file is a proxy that communicates between the JavaScript side and the rest of the system. It subscribes to JavaScript callbacks, to react to UI interactions and can directly execute JavaScript code to pass data from ruby to the UI elements.
+\begin{lstlisting}[language=Ruby, label={lst:ui_proxy}, caption=excerpt from UI callbacks]
+Class AnimationPane
+  def add_piston(id)
+    @dialog.execute_script("addPiston(#{id})")
+  end
+
+  def stop_simulation
+    @dialog.execute_script('resetUI();')
+  end
+
+  def register_callbacks
+    @dialog.add_action_callback('start_simulation') do |_ctx|
+      if @simulation_tool.simulation.nil? ||
+         @simulation_tool.simulation.stopped?
+        start_simulation_setup_scripts
+      end
+    end
+
+    @dialog.add_action_callback('stop_simulation') do |_ctx|
+      unless @simulation_tool.simulation.nil? ||
+             stop_simulation
+        Sketchup.active_model.select_tool(nil)
+      end
+    end
+
+    ...
+  end
+end
+\end{lstlisting}
+
+As can be seen in listing \ref{lst:ui_proxy}, these proxy classes have two ways of communicating between Ruby and JavaScript. The \textit{execute\_script} function on the HtmlDialog can call arbitrary code on the UI element at any time. It is possible to pass ruby primitives, such as strings, integers or arrays, through this function call. This makes it possible to a) have complex interactions with the user interface and b) keep state on the ruby side and focus on visualization in JavaScript.\\
+The other way works equally asynchronously. JavaScript can send signals to SketchUp. The SketchUp side can register to those callbacks and execute ruby code.
 
 \subsection{Structure Creation}
 Terminology:\\

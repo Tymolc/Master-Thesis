@@ -1,8 +1,14 @@
 \chapter{Walkthrough}\label{ch:walkthrough}
+\begin{figure}[h!]
+    \includegraphics[width=\textwidth]{Walkthrough/dino.png}
+    \centering
+    \caption{The T-Rex built in TrussFab}
+    \label{fig:sketchup_objects}
+\end{figure}\improvement{Don't show animation pane...}
+This chapter will present the functionalities of the system by showing the process of creating the T-Rex shown in figure \textit{TODO: Add image}. This will include all steps from creating the static structure, over introducing animation up to fabricating the final object.
 \section{Designing Static Structures}
-- placement of structurally stable primitives\\
-- importing previously built objects\\
-- edit object (grow/shrink, move tool)
+Users can use predefined and structurally stable primitives to create their objects. These primitives are tetrahedra and octahedra. The structure can be formed as desired by using the grow and shrink tool. These tools elongate or shorten edges, deforming the structure dynamically in such a way that the form stays in tact as much as possible. The deform tool does a similar job, but rather than working on edges, using this tool the user can move a node.\\
+These Objects can also be saved to a JSON file and imported later. This way the user can either save his work for working on it at a later point or create new primitives that can be attached to another object.
 \section{Adding Movement to the Structures}
 - placing actuators\\
 - placing primitives with variable geometry trusses\\
