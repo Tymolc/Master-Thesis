@@ -6,10 +6,43 @@
     \label{fig:sketchup_objects}
 \end{figure}\improvement{Don't show animation pane...}
 This chapter will present the functionalities of the system by showing the process of creating the T-Rex shown in figure \textit{TODO: Add image}. This will include all steps from creating the static structure, over introducing animation up to fabricating the final object.
+
 \section{Designing Static Structures}
-Users can use predefined and structurally stable primitives to create their objects. These primitives are tetrahedra and octahedra. The structure can be formed as desired by using the grow and shrink tool. These tools elongate or shorten edges, deforming the structure dynamically in such a way that the form stays in tact as much as possible. The deform tool does a similar job, but rather than working on edges, using this tool the user can move a node.\\
-These Objects can also be saved to a JSON file and imported later. This way the user can either save his work for working on it at a later point or create new primitives that can be attached to another object.
+Users can use predefined and structurally stable primitives to create their objects. These primitives are tetrahedra and octahedra. The structure can be formed as desired by using the grow and shrink tool. These tools elongate or shorten edges, deforming the structure dynamically in such a way that the form stays in tact as much as possible. The deform tool does a similar job, but rather than working on edges, this tool can move nodes.\\
+The created Objects can also be saved to a JSON file. This way the user can either save his work for working on it later or create new primitives that can be attached to another object.
+\begin{figure}
+  \centering
+  \begin{minipage}{.5\textwidth}
+    \centering
+    \includegraphics[width=.9\linewidth]{Walkthrough/leg_asset.png}
+    \captionof{figure}{An exported leg asset...}
+    \label{fig:leg_asset}
+  \end{minipage}%
+  \begin{minipage}{.5\textwidth}
+    \centering
+    \includegraphics[width=.9\linewidth]{Walkthrough/spider_using_leg_asset.png}
+    \captionof{figure}{... which can be used to quickly build the spider}
+    \label{fig:spider_in_progress}
+  \end{minipage}
+\end{figure}
+
 \section{Adding Movement to the Structures}
+Movement is added to the structure by placing special physics links. These links act like linear actuators - struts that can extend and retract in a straight line. There are multiple methods for placing these actuators, ranging from a fully-automated way to manual placement.
+\begin{figure}
+  \centering
+  \begin{minipage}{.5\textwidth}
+    \centering
+    \includegraphics[width=.9\linewidth]{Walkthrough/crane_up.png}
+    \captionof{figure}{An exported leg asset...}
+    \label{fig:leg_asset}
+  \end{minipage}%
+  \begin{minipage}{.5\textwidth}
+    \centering
+    \includegraphics[width=.9\linewidth]{Walkthrough/crane_down.png}
+    \captionof{figure}{... which can be used to quickly build the spider}
+    \label{fig:spider_in_progress}
+  \end{minipage}
+\end{figure}
 - placing actuators\\
 - placing primitives with variable geometry trusses\\
 - demonstrate movement tool\\
