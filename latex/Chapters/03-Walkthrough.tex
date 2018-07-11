@@ -43,10 +43,12 @@ Movement is added to the structure by placing special physics links. These links
     \label{fig:spider_in_progress}
   \end{minipage}
 \end{figure}
-- placing actuators\\
-- placing primitives with variable geometry trusses\\
-- demonstrate movement tool\\
+The automated way works by demonstrating a desired movement. The user selects the \textit{Demonstrate Movement Tool}, clicks a node that should experience a certain movement and drags a line to the desired end position. TrussFab will then search for an actuator that brings the node closest to the desired position and turns the resulting edge into an actuator. The tool runs through all edges of the structure, replacing one after another with an actuator and simulates the resulting movement in the background. The actuator that solves the problem the best will be created.\\
+Another way to add movement is to use predefined dynamic assets. It can be difficult for a user to fully grasp how an actuator will move the whole object. That's why we encapsulated often-used atomic sub-assemblies into quick-access tools. These assets connect to the rest of the structure through a dedicated triangle surface. Because the motion is localized in this asset, the result in the bigger structure is easier understandable.\\
+The manual actuator placement requires the most knowledge about the resulting motion. It is, however, the most flexible way to create movement. The user can choose the actuator tool to turn every edge into or connect two nodes with an actuator. This can be done by clicking on the desired edge or the nodes. Transforming an existing edge is usually the desired use case, as the introduction of more edges (by connecting two previously unconnected nodes) tends to make the truss more stable and can prevent motion altogether. Turning an edge into an actuator essentially removes this edge and adds a degree of freedom.
 \subsection{Force Analysis}
+If the structure fulfills the desired motion, the user will want to check if the forces created during executing it will not exceed the breaking force of the object. A lot of factors play a role in the formation of the forces. These range from weight forces over lever forces to inertial forces. TrussFab aids the user to detect weak points and force peaks during a motion in different ways.\\
+TrussFab's tools provide the possibility to constantly monitor the forces that occur during interactive movement of the structure.\\
 - check tension force on edges\\
 - check acceleration and speed on nodes\\
 - add loads to object\\
