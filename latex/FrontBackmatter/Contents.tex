@@ -26,7 +26,7 @@
     %*******************************************************
     %\phantomsection
     \refstepcounter{dummy}
-    %\addcontentsline{toc}{chapter}{\listfigurename}
+    \addcontentsline{toc}{chapter}{\listfigurename}
     \pdfbookmark[1]{\listfigurename}{lof}
     \listoffigures
 
@@ -36,20 +36,21 @@
     % List of Tables
     %*******************************************************
     %\phantomsection
-    \refstepcounter{dummy}
-    %\addcontentsline{toc}{chapter}{\listtablename}
-    \pdfbookmark[1]{\listtablename}{lot}
-    \listoftables
+    % \refstepcounter{dummy}
+    % \addcontentsline{toc}{chapter}{\listtablename}
+    % \pdfbookmark[1]{\listtablename}{lot}
+    % \listoftables
 
-    \vspace{8ex}
+    % \vspace{8ex}
     % \newpage
 
     %*******************************************************
     % List of Listings
     %*******************************************************
     %\phantomsection
+    \newpage
     \refstepcounter{dummy}
-    %\addcontentsline{toc}{chapter}{\lstlistlistingname}
+    \addcontentsline{toc}{chapter}{\lstlistlistingname}
     \pdfbookmark[1]{\lstlistlistingname}{lol}
     \lstlistoflistings
 

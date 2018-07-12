@@ -55,6 +55,7 @@ Control elements of the animation window always work on the whole group. The col
     \label{fig:animation_pane}
 \end{figure}
 To add a keyframe to the animation pane, first the slider has to be moved to the desired position. The object will start to move according to the sliders position - if the slider is at the top, the actuator will be fully extended and vice versa. That way, the user can visualize the extend of the movement. If the user is satisfied, the indicator line can be moved to the desired position in the timeline and the diamond button is pressed to add this point to the animation.
+
 \subsection{Force Analysis}
 If the structure fulfills the desired motion, the user will want to check if the forces created during executing it will not exceed the breaking force of the object. A lot of factors play a role in the formation of the forces. These range from weight forces over lever forces to inertial forces. TrussFab aids the user to detect weak points and force peaks during a motion in different ways.\\
 TrussFab's tools provide the possibility to constantly monitor the forces that occur during interactive movement of the structure. In simulation mode, all edges will be colored red or blue in increasing intensity the higher the force on them is. Red indicates compression force, while blue means tension force. A completely white color indicates a force of 0 N. These tension forces are automatically calculated by the built-in physics engine.\\
@@ -67,27 +68,48 @@ On top of the coloring of edges, the user can also use a sensor tool. This tool 
     \label{fig:sensor}
 \end{figure}
 Using these tools, the user can detect unwanted movements, like wobbling during change of poses, overly stressful actuations and even foresee breaking points.\\
-If the movement of an animation exceeds the breaking force of the simulation, TrussFab has means of helping the user to find a movement curve that puts less stress on the structure. If TrussFab detects that the structure broke, a popup window will appear asking the user to fix the animation. Two possibilities are available: fixing the animation by a) reducing the speed or b) reducing the motion. If option a) is chosen, TrussFab will elongate the animation sequence for all piston groups. This results in a slower movement and less force on the structure. Option b) will keep the length of the animation, but move the keyframes closer to the center line. The amplitude of the motion will be decreased this way.
+If the movement of an animation exceeds the breaking force of the simulation, TrussFab has means of helping the user to find a movement curve that puts less stress on the structure. If TrussFab detects that the structure broke, a popup window will appear asking the user to fix the animation. Two possibilities are available: fixing the animation by a) reducing the speed or b) reducing the motion. If option a) is chosen, TrussFab will elongate the animation sequence for all piston groups. This results in a slower movement and less force on the structure. Option b) will keep the length of the animation, but move the keyframes closer to the center line. The amplitude of the motion will be decreased this way.\\
+Both versions will reduce the acceleration of the structure. The force formula $F = m * a$ shows, that the force increases proportionally with the acceleration, as the mass is constant in the structure. Reducing acceleration also reduces the force.
 \begin{figure}[h!]
     \includegraphics[width=\textwidth]{Walkthrough/fix_breaking.png}
     \centering
     \caption{adsf}
     \label{fig:fix_breaking}
 \end{figure}
+
 \section{Controlling the Structure}
+Pneumatic actuators themselves do not have any knowledge about their position and extent. Their actuation underlies so-called open-loop control, meaning that the actuator can not react to changing external influences.
 - closed-loop control -> more sophisticated and complex movements possible\\
+
 \subsection{PID Control}
 - short intro: how does PID work?\\
 - how do we use it?\\
 - i.e. position control of actuators\\
 - forward reference to section 4 (setup of length measurement)\\
+
 \section{Building the Final Object}
-After the object was sufficiently tested in the editor, it is time to print the connectors and assemble the final object.
+After the object was sufficiently tested in the editor, it is time to print the connectors and assemble the final object. To do this, TrussFab will calculate which connections will need to move and which can be static in the printed object. It also takes into account constraints, such as the minimum distance from a bottle neck to the center of a hinge, which might otherwise restrict movement. This process will be explained in detail in Section \ref{sec:hinge_placement_impl}. This information is used to create OpenSCAD files - a modeling language which we use to modify templates of hubs and hinges.
+
 \subsection{OpenSCAD}
 At first, our abstract description of the object has to be converted into a physical representation. In order to achieve this, we used a modeling language called \textit{OpenSCAD}. The \textit{Export Hubs and Hinges} button will automatically morph the structure into a statically sound object, i.e. it will elongate and shorten edges so, that the ideal amount of movement is possible. \improvement{This needs to be more detailed for sure!!}\\
-The resulting arrangement of nodes and edges will be transferred to OpenSCAD. Using templates, we can create parameterized representations of hubs and hinges, which, when assembled, will exactly represent the object in the editor. This will be explained in more detail in \ref{sec:openscad_impl}.
+The resulting arrangement of nodes and edges will be transferred to OpenSCAD. OpenSCAD enables us to create 3D structures programmatically. We use it to create 3-dimensional primitives, such as spheres, cubes or cylinders, and to apply set operations, like \textit{difference} or \textit{union} on them.\\
+OpenSCAD provides an editor which can be used to prototype a model. This editor, including some example operations can be seen in Figure \ref{fig:openscad_overview}. We used this editor to create the template functions used for creating the final hinge and hub models. This will be explained in more detail in \ref{sec:openscad_impl}.
+\begin{figure}[h!]
+    \includegraphics[width=\textwidth]{Walkthrough/openscad_overview.png}
+    \centering
+    \caption{Overview of the OpenSCAD editor}
+    \label{fig:openscad_overview}
+\end{figure}
+
 \subsection{Printing the Parts}
-Each OpenSCAD file represents a single part in the structure. These files can easily be converted to \textit{.stl} files \improvement{put conversion script in here somehow}, which are typically used for 3D printing. These files have to be imported into any 3D printing software, arranged efficiently and send to a 3D printer. \unsure{add some time reference here?}
+Each OpenSCAD file represents a single part in the structure. These files can easily be converted to \textit{.stl} files, which are typically used for 3D printing. These files have to be imported into any 3D printing software, arranged efficiently and sent to a 3D printer. Printing of one hinge part using an UltiMaker 3 printer takes about 20 minutes.\unsure{evaluate!?}
+
 \subsection{Assembling the Structure}
-The resulting hubs and hinges contain an ID system for easy assembly. Each part of a node has the node ID printed on. That way it is easy to find out which hinge-parts belong together. Additionally, each ``extended'' edge-line (elongation) \info{Verlängerung einer Edge, also quasi die Elongation. FIND A BETTER NAME!} contains the id of the connected edge. A compound elongation, which is the usual case for a hinge, is therefore assembled by finding two parts with the same node and edge ID. For static hubs, this concept is similar, but of course these do not have to be assembled.\\
+The resulting hubs and hinges contain an ID system for easy assembly. Each part of a node has the node ID printed on. That way it is easy to find out which hinge-parts belong together. Additionally, each edge elongation \info{Verlängerung einer Edge, also quasi die Elongation. FIND A BETTER NAME!} contains the id of the connected edge. A compound elongation, which is the usual case for a hinge, is therefore assembled by finding two parts with the same node and edge ID. For static hubs, this concept is similar, but of course these do not have to be assembled.\\
 Two connectors with different node IDs but the same edge IDs will be connected by a link.
+\begin{figure}[h!]
+    \includegraphics[width=\textwidth]{Walkthrough/hinge.JPG}
+    \centering
+    \caption{A hinge}
+    \label{fig:hinge}
+\end{figure}
