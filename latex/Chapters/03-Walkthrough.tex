@@ -3,9 +3,9 @@
     \includegraphics[width=\textwidth]{Walkthrough/dino.png}
     \centering
     \caption{The T-Rex built in TrussFab}
-    \label{fig:sketchup_objects}
+    \label{fig:t_rex}
 \end{figure}\improvement{Don't show animation pane...}
-This chapter will present the functionalities of the system by showing the process of creating the T-Rex shown in figure \textit{TODO: Add image}. This will include all steps from creating the static structure, over introducing animation up to fabricating the final object.
+This chapter will present the functionalities of the system by showing the process of creating the T-Rex shown in figure \todo{Add image}. This will include all steps from creating the static structure, over introducing animation up to fabricating the final object.
 
 \section{Designing Static Structures}
 Users can use predefined and structurally stable primitives to create their objects. These primitives are tetrahedra and octahedra. The structure can be formed as desired by using the grow and shrink tool. These tools elongate or shorten edges, deforming the structure dynamically in such a way that the form stays in tact as much as possible. The deform tool does a similar job, but rather than working on edges, this tool can move nodes.\\
@@ -34,21 +34,31 @@ Movement is added to the structure by placing special physics links. These links
     \centering
     \includegraphics[width=.9\linewidth]{Walkthrough/crane_up.png}
     \captionof{figure}{An exported leg asset...}
-    \label{fig:leg_asset}
+    \label{fig:dino_up}
   \end{minipage}%
   \begin{minipage}{.5\textwidth}
     \centering
     \includegraphics[width=.9\linewidth]{Walkthrough/crane_down.png}
     \captionof{figure}{... which can be used to quickly build the spider}
-    \label{fig:spider_in_progress}
+    \label{fig:dino_down}
   \end{minipage}
-\end{figure}
+\end{figure}\todo{Caption!}
 The automated way works by demonstrating a desired movement. The user selects the \textit{Demonstrate Movement Tool}, clicks a node that should experience a certain movement and drags a line to the desired end position. TrussFab will then search for an actuator that brings the node closest to the desired position and turns the resulting edge into an actuator. The tool runs through all edges of the structure, replacing one after another with an actuator and simulates the resulting movement in the background. The actuator that solves the problem the best will be created.\\
 Another way to add movement is to use predefined dynamic assets. It can be difficult for a user to fully grasp how an actuator will move the whole object. That's why we encapsulated often-used atomic sub-assemblies into quick-access tools. These assets connect to the rest of the structure through a dedicated triangle surface. Because the motion is localized in this asset, the result in the bigger structure is easier understandable.\\
-The manual actuator placement requires the most knowledge about the resulting motion. It is, however, the most flexible way to create movement. The user can choose the actuator tool to turn every edge into or connect two nodes with an actuator. This can be done by clicking on the desired edge or the nodes. Transforming an existing edge is usually the desired use case, as the introduction of more edges (by connecting two previously unconnected nodes) tends to make the truss more stable and can prevent motion altogether. Turning an edge into an actuator essentially removes this edge and adds a degree of freedom.
+The manual actuator placement requires the most knowledge about the resulting motion. It is, however, the most flexible way to create movement. The user can choose the actuator tool to turn every edge into or connect two nodes with an actuator. This can be done by clicking on the desired edge or the nodes. Transforming an existing edge is usually the desired use case, as the introduction of more edges (by connecting two previously unconnected nodes) tends to make the truss more stable and can prevent motion altogether. Turning an edge into an actuator essentially removes this edge and adds a degree of freedom.\\
+The user can actuate these links in two different ways. The \textit{animation window} provides a slider for manual movement, as well as an animation pane which allows placing keyframes and playback modes: single and looping. All actuators have an actuators group assigned to them. Per default, an actuator is placed in its own, empty group. Using the actuator tool, already used for placing actuators, this group can be changed, which is indicated by the actuator changing its color.\\
+Control elements of the animation window always work on the whole group. The color of the animation line indicates which group will be actuated by either the slider or the keyframes.
+\begin{figure}[h!]
+    \includegraphics[width=.5\textwidth]{Walkthrough/animation_pane.png}
+    \centering
+    \caption{The animation pane showing two actuators group, the red one contains two actuators}
+    \label{fig:animation_pane}
+\end{figure}
+To add a keyframe to the animation pane, first the slider has to be moved to the desired position. The object will start to move according to the sliders position - if the slider is at the top, the actuator will be fully extended and vice versa. That way, the user can visualize the extend of the movement. If the user is satisfied, the indicator line can be moved to the desired position in the timeline and the diamond button is pressed to add this point to the animation.
 \subsection{Force Analysis}
 If the structure fulfills the desired motion, the user will want to check if the forces created during executing it will not exceed the breaking force of the object. A lot of factors play a role in the formation of the forces. These range from weight forces over lever forces to inertial forces. TrussFab aids the user to detect weak points and force peaks during a motion in different ways.\\
 TrussFab's tools provide the possibility to constantly monitor the forces that occur during interactive movement of the structure. In simulation mode, all edges will be colored red or blue in increasing intensity the higher the force on them is. Red indicates compression force, while blue means tension force. A completely white color indicates a force of 0 N. These tension forces are automatically calculated by the built-in physics engine.\\
+The weight of each node, which plays a big role in the force distribution, is calculated based on the number of edges connected to it and whether it is a hinge or a hub. If the user decides that certain nodes will have more load, these can be fitted with additional weight using the \textit{Add Weight Tool}.\\
 On top of the coloring of edges, the user can also use a sensor tool. This tool can be used on a single edge and observes this one more closely. The force data on an edge with a sensor will be recorded and visualized over time in a chart. This tool also works on nodes. Rather than recording the force, if the sensor tool is used on nodes, speed and acceleration data will be visualized. The result can be seen in figure \ref{fig:sensor}.\\
 \begin{figure}[h!]
     \includegraphics[width=\textwidth]{Walkthrough/sensor.png}
@@ -56,10 +66,14 @@ On top of the coloring of edges, the user can also use a sensor tool. This tool 
     \caption{A sensor measures the force on the central actuator, and speed and acceleration on a node at the ``nose'' of the dino}
     \label{fig:sensor}
 \end{figure}
-- check acceleration and speed on nodes\\
-- add loads to object\\
-- check tension while moving\\
-- automatically fix movement when object is exceeding force\\
+Using these tools, the user can detect unwanted movements, like wobbling during change of poses, overly stressful actuations and even foresee breaking points.\\
+If the movement of an animation exceeds the breaking force of the simulation, TrussFab has means of helping the user to find a movement curve that puts less stress on the structure. If TrussFab detects that the structure broke, a popup window will appear asking the user to fix the animation. Two possibilities are available: fixing the animation by a) reducing the speed or b) reducing the motion. If option a) is chosen, TrussFab will elongate the animation sequence for all piston groups. This results in a slower movement and less force on the structure. Option b) will keep the length of the animation, but move the keyframes closer to the center line. The amplitude of the motion will be decreased this way.
+\begin{figure}[h!]
+    \includegraphics[width=\textwidth]{Walkthrough/fix_breaking.png}
+    \centering
+    \caption{adsf}
+    \label{fig:fix_breaking}
+\end{figure}
 \section{Controlling the Structure}
 - closed-loop control -> more sophisticated and complex movements possible\\
 \subsection{PID Control}
