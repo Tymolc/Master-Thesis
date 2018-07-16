@@ -51,8 +51,16 @@ We aimed to make our software simulation as accurate to the real-world object as
 We used a digital force sensor, with a capacity of 5000N and an error rate of 0.5\%, on the front bottom edge of the T-Rex (Figure \ref{fig:force_measurement} a-b). It was placed between two small bottles, giving the edge the same length as it would have had with two big bottles. We chose this position, because it bears the largest force due to the long lever force the neck of the T-Rex produces. Our test case consisted of moving the head up from its lowest to its highest and then back down to its lowest position again. The same movement, with the same speed, was programmed in the simulation. Figure \ref{fig:force_measurement}c shows, that both, the simulated and the measured force, are in agreement.
 
 \section{Controls}
+We controll the pneumatic actuators using a MIDI control interface. The slider inputs are sent to an Arduino which translats them to control signals for digitally controllable pressure valves. The actuators have two connections for air pipes: one for extending the actuator and one for retracting it. The signal from the slider is interpreted as a mixture between these two inputs, with the slider at the top meaning that all the air is send to the extending input and the slider at the bottom completely retracting it. This way we achieved manual open-loop position control.\\
+\begin{figure}[h!]
+    \includegraphics[width=\textwidth]{Hardware/hardware_setup.png}
+    \centering
+    \caption{Hardware setup for controlling the T-Rex, with Arduino, electric pressure control valves, and compressor.}
+    \label{fig:hardware_setup}
+\end{figure}
+Figure \ref{fig:hardware_setup} shows the main parts of our hardware setup. The electrically controllable pressure regulators receive signals from the control board and limit the air pressure according to the needed level of extension of a given actuator. One pressure regulator is connected to exactly on actuator. The \textit{Airpress HL 360} compressor delivers the regulators with up to 8 bars of pressure.\\
+The limited pressure is tunneled to a valve terminal. This terminal opens and closes airflow to the actuators. If it opens a valve, the regulated pressure will enter its air circuit and change the extention of the actuator. If it closes it, the pressure will stay constant and the actuator keeps its position.
 
 \subsection{Electric vs. Pneumatic Actuators}
-
 
 \subsection{Open Loop vs. Closed Loop}
