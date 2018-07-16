@@ -93,7 +93,7 @@ After the object was sufficiently tested in the editor, it is time to print the 
 \subsection{OpenSCAD}
 At first, our abstract description of the object has to be converted into a physical representation. In order to achieve this, we used a modeling language called \textit{OpenSCAD}. The \textit{Export Hubs and Hinges} button will automatically morph the structure into a statically sound object, i.e. it will elongate and shorten edges so, that the ideal amount of movement is possible. \improvement{This needs to be more detailed for sure!!}\\
 The resulting arrangement of nodes and edges will be transferred to OpenSCAD. OpenSCAD enables us to create 3D structures programmatically. We use it to create 3-dimensional primitives, such as spheres, cubes or cylinders, and to apply set operations, like \textit{difference} or \textit{union} on them.\\
-OpenSCAD provides an editor which can be used to prototype a model. This editor, including some example operations can be seen in Figure \ref{fig:openscad_overview}. We used this editor to create the template functions used for creating the final hinge and hub models. This will be explained in more detail in \ref{sec:openscad_impl}.
+OpenSCAD provides an editor which can be used to prototype a model. This editor, including some example operations can be seen in Figure \ref{fig:openscad_overview}. We used this editor to create the template functions used for creating the final hinge and hub models. This will be explained in more detail in Section \ref{sec:openscad_impl}.
 \begin{figure}[h!]
     \includegraphics[width=\textwidth]{Walkthrough/openscad_overview.png}
     \centering
@@ -112,4 +112,4 @@ Two connectors with different node IDs but the same edge IDs will be connected b
     \centering
     \caption{A hinge}
     \label{fig:hinge}
-\end{figure}
+\end{figure}\improvement{This will be a better image.}
