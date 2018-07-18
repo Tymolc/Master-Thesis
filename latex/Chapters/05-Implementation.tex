@@ -119,11 +119,6 @@ With the knowledge of the new physics calculations, we can send information abou
 \end{figure}
 Once the physics portion of the rendering step is done, our own graph structure has to be updated. For that, each edge and node updates their own positions and transformations based on their internal physics objects.\\
 As a last step, sensor data is send to the respective UIs in order to draw a chart depicting physical data.
-\section{Minimization Logic}
-- elongates and shortens edges so that maximum movement is possible with minimum material use\\
-- uses iterative relaxation algorithm, will be explained in \ref{sec:relaxation}
-
-\section{Export}
 
 \section{TrussFab Designer}
 The TrussFab Designer provides static sketching functionalities. It can create and display different predefined models, has knowledge about the connections of different components and can modify the resulting objects structure.
@@ -168,7 +163,6 @@ Class AnimationPane
   end
 end
 \end{lstlisting}
-
 As can be seen in listing \ref{lst:ui_proxy}, these proxy classes have two ways of communicating between Ruby and JavaScript. The \textit{execute\_script} function on the HtmlDialog can call arbitrary code on the UI element at any time. It is possible to pass ruby primitives, such as strings, integers or arrays, through this function call. This makes it possible to a) have complex interactions with the user interface and b) keep state on the ruby side and focus on visualization in JavaScript.\\
 The other way works equally asynchronously. JavaScript can send signals to SketchUp. The SketchUp side can register to those callbacks and execute ruby code.
 
@@ -194,6 +188,10 @@ Terminology:\\
 \section{Export}
 
 \subsection{Hinge Placement}\label{sec:hinge_placement_impl}
+
+\subsection{Minimization Logic}
+- elongates and shortens edges so that maximum movement is possible with minimum material use\\
+- uses iterative relaxation algorithm, will be explained in \ref{sec:relaxation}
 
 \subsection{OpenSCAD Export}\label{sec:openscad_impl}
 

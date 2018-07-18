@@ -1,9 +1,6 @@
 \chapter{Hardware}\label{ch:hardware}
-- chapter will talk about challenges we faced in finding stable connectors\\
-- material used: PLA (biodegradable, sturdy enough, ...)\\
-- assembled based on ID system\\
-- no special requirements to printer\\
-- we used: UltiMaker3, UltiMaker2 and \info{remember name of other printer}
+This chapter will talk about challenges and solutions we faced while finding connections for large-scale dynamic objects. It will explain the materials and methods used in transforming the TrussFormer-designed models into actual objects.\\
+Furthermore, this chapter will explain the techniques and hardware used to get the structure to move.
 
 \section{Building Parts}
 We can differentiate between three essential building parts for our truss structures. \textit{Links} are the connecting and shaping parts. We used PET bottles for these parts, because they are readily available, cheap and sturdy.\\
@@ -11,7 +8,7 @@ We have two different ways of connecting links. For dynamic connections, i.e. co
 Links, and hubs or hinge chains are connected by purpose-designed \textit{cuffs}, which fit over the bottles' thread and a connector part on the hub.
 
 \subsection{Links}
-We opted to use 1l (big) and 0.5l (small) reusable PET bottles because of their intrinsic stability and abundant availability. Two bottles are connected on their bottom side by a wood screw, which is inserted using a special long-necked screwdriver. The resulting link-lengths are:
+We opted to use 1l (big) and 0.5l (small) reusable PET bottles because of their stability and abundant availability. Two bottles are connected on their bottom side by a wood screw, which is inserted using a special long-necked screwdriver. The resulting link-lengths are:
 \begin{enumerate}
 \item 60 cm - two big bottles
 \item 53 cm - one big and one small bottle
@@ -19,6 +16,24 @@ We opted to use 1l (big) and 0.5l (small) reusable PET bottles because of their 
 \end{enumerate}
 
 \subsection{Hubs}
+We call the connecting parts \textit{Hubs}. These hubs were designed to withstand loads in the range of a human weight. Earlier tests showed, that the bottle links we use can withstand a compression force of around 85 kg.\\
+Hubs are solid one-piece objects that can connect two or more links. They therefore consist of two or more regions that can hold the neck of a bottle. We call these regions \textit{connectors}. These connectors consist of a flat part, slightly wider (30 mm) than the bottle openings outer diameter (28 mm) and an extrusion in the middle, the size of its inner diameter (20 mm). The extrusion can simply be plugged in to the bottle opening, giving a snug fit and good lateral stability.\\
+To prevent the bottles from slipping out, a cuff is clipped over the connector and the bottle opening. The cuff is designed as a circular section, slightly larger than a semicircle. Its upper and lower end have different sizes: the smaller end fits over a rim on the hub connector, the larger one over an extrusion on the bottle neck. Due to its flexibility, the cuff acts like a spring, making it easy to clip over the bottle and connector, but giving enough stability once clipped on.
+\begin{figure}
+  \centering
+  \begin{minipage}{.5\textwidth}
+    \centering
+    \includegraphics[width=.9\linewidth, angle=270]{Hardware/connector.JPG}
+    \captionof{figure}{The connector is inserted into the bottle opening ...}
+    \label{fig:connector}
+  \end{minipage}%
+  \begin{minipage}{.5\textwidth}
+    \centering
+    \includegraphics[width=.9\linewidth, angle=270]{Hardware/connector_with_cuff.JPG}
+    \captionof{figure}{... and secured with a cuff}
+    \label{fig:connector_with_cuff}
+  \end{minipage}
+\end{figure}
 
 \subsection{Hinge Chains}
 We are using truss structures specifically because of their structural stability. In order to introduce movement to these constructions, we came across some challenges. Multiple edges have to be able to pivot around a common hub. This kind of spherical can potentially achieved using ball joints. However, these typically only allow for a connection of two edges without obstructing each other.\\
@@ -30,14 +45,7 @@ We solve this issue by using a \textit{spherical joint mechanism}. As can be see
     \label{fig:hinge_chain}
 \end{figure}
 We started out using an open hinge chain, meaning that the chain had special end parts which were not connected. This gave us a lot of freedom of movement, however it turned out that this design was not strong enough for our needs and frequently broke during testing builds of the T-Rex. This required us to rethink our design and we came up with a closed hinge chain.\\
-The degrees of freedom (DoF), our hinge system needs to have, underly constraints, allowing us to limit the possible movement of the hinges. The original spherical joint mechanism shown in Figure \ref{fig:hinge_chain}a connected all edges using two hinges, allowing for 2 DoF. This is not necessary if we are dealing with truss structures. An example of TrussFabs's hinge design can be seen in Figure \ref{fig:hinge_chain}b. Only edge 4 is connected to its neighboring edges using two intermediate hinges. All other edges only require rotation (resulting in 1 DoF).\\
-
-
-\subsection{Cuffs}
-In order to connect links to nodes, we developed a custom coupling system. These cuffs fit exactly over the neck of the bottle and special connecting parts on the hubs.
-- something about sizes of bottle neck\\
-- size of connecting part\\
-- little dimple for extra stability\\
+The degrees of freedom (DoF), our hinge system needs to have, underly constraints, allowing us to limit the possible movement of the hinges. The original spherical joint mechanism shown in Figure \ref{fig:hinge_chain}a connected all edges using two hinges, allowing for 2 DoF. This is not necessary if we are dealing with truss structures. An example of TrussFabs's hinge design can be seen in Figure \ref{fig:hinge_chain}b. Only edge 4 is connected to its neighboring edges using two intermediate hinges. All other edges only require rotation (resulting in 1 DoF).
 
 \subsection{Stability}
 The hinge parts and connecting cuffs are printed using consumer-grade desktop FDM\footnote{Fused Deposition Modeling} 3D printers. The filament consisted of PLA\footnote{Polylactic acid} plastic and the parts had a 15\% infill with a wall thickness of 3 mm. We chose PLA filament instead of ABS\footnote{Acrylonitrile butadiene styrene} primarily because of its easier usability. ABS plastic, while being stronger, needs to be printed on a heated surface, which many hobbyist printers do not have. As we designed our tool for 3D-printing enthusiasts and not professionals, we wanted to target owners of consumer-grade printers. Additionally, PLA consists of organic materials (mainly cornstarch and sugarcane), which makes it biodegradable, as opposed to ABS plastic, which is oil-based.\\
