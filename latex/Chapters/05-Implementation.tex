@@ -236,7 +236,8 @@ First, all static groups are determined. Static groups are connected structures,
 
 \subsection{Minimization Logic}
 In order to achieve the maximum amount of motion, while keeping the minimum amount of printing time, we needed to find a solution for minimizing hinge and hub sizes.\\
-For hinges, three lengths are of importance.
+For hinges, three lengths are of importance. These lengths consist of the distance from the rotation center to the lower side of the hinge connector (l1 distance), the height of the connector itself (l2 distance) and an optional third length being the elongation of this hinge, i.e. the length of the edge connector (l3 distance).
+TODO: I am actually not sure if we do anything special here. Check this.
 \begin{figure}[ht]
   \centering
   \begin{minipage}[t]{5cm}
