@@ -185,7 +185,29 @@ Terminology:\\
 
 \subsection{Relaxation Algorithm}\label{sec:relaxation}
 The relaxation algorithm is used to distribute the change of an edge over the whole structure. This way, we can adapt edges without changing the overall appearance of the object.\\
-If we want to elongate an edge, we give this edge a new \textit{optimal length}.
+If we want to elongate an edge, we give this edge a new \textit{optimal length}. This length and the edge itself is stored internally in the relaxation class. With this information, the actual relaxation algorithm is triggered. For a set number of iterations, 20'000 in our case, the algorithm will pick an edge out of the stored set randomly and checks if its current length differs from its optimal length, if any is set. If no optimal length is set or the deviation is sufficiently little, the next edge will be investigated. For the first iteration, the only edge in the set will be the one we want to elongate or shrink. All edges connected to the same nodes as this edge will also be added to the set and the node positions of the edge will be adapted to achieve the targeted length, damped by a factor to receive a more natural end result over more iterations. The direction vector of the edge will stay the same. That means, that other edges will change their lengths as well during this step.\\
+During the next iteration of the loop, another edge in the set, now containing the incident edges as well, will undergo this process; checking if it needs to change it length, adding its incidents to the set and bringing the nodes closer to the optimal length. At some point, all edges will be sufficiently close to their targeted length or the maximum number of iterations will be reached.\\
+When this step is reached, we have to update the sketchup representations according to the data we collected in the internal storage of the relaxation, in order to visualize the result to the user.
+
+\begin{lstlisting}[language=Ruby, label={lst:relaxation}, caption=The relaxation algorithm]
+def relax
+    # Abort if there is nothing to do
+    return if @edges.empty?
+    number_connected_edges = connected_edges.length
+    @max_iterations.times do
+      # pick a random edge
+      edge = @edges.to_a.sample
+      # only adapt edge if we still have stuff to do
+      deviation = deviation_to_optimal_length(edge)
+      next if deviation.abs < CONVERGENCE_DEVIATION
+      # add neighbors if we still have edges left to add
+      add_edges(edge.incidents) unless @edges.length == number_connected_edges
+      adapt_edge(edge, deviation * @damping_factor)
+    end
+    move_nodes_to_new_position
+    self
+  end
+\end{lstlisting}
 
 \section{Export}
 
