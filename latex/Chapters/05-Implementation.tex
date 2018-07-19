@@ -120,8 +120,8 @@ With the knowledge of the new physics calculations, we can send information abou
 Once the physics portion of the rendering step is done, our own graph structure has to be updated. For that, each edge and node updates their own positions and transformations based on their internal physics objects.\\
 As a last step, sensor data is send to the respective UIs in order to draw a chart depicting physical data.
 
-\section{TrussFab Designer}
-The TrussFab Designer provides static sketching functionalities. It can create and display different predefined models, has knowledge about the connections of different components and can modify the resulting objects structure.
+\section{TrussFab Editor}
+The TrussFab Editor provides static sketching functionalities. It can create and display different predefined models, has knowledge about the connections of different components and can modify the resulting objects structure.
 
 \subsection{User Interface}
 The user interface (UI) is written in JavaScript. It uses SketchUps' built-in \textit{HtmlDialog} class, which lets us interact with HTML dialog boxes using the Ruby API\footnote{Application Programming Interface}. The HtmlDialog is a modified version of Googles' Chrome browser and supports modern HTML5 code, as well as state-of-the art JavaScript functionalities and extensions.\\
@@ -209,11 +209,50 @@ def relax
   end
 \end{lstlisting}
 
+\begin{figure}[ht]
+  \centering
+  \begin{minipage}[t]{5cm}
+    \centering
+    \includegraphics[height=120px]{Implementation/relax_one.png}
+    \captionof{figure}{The relaxation algorithm applied with only one iteration. The extension of the lower right edge resulted in growing incident edges as well.}
+    \label{fig:leg_asset}
+  \end{minipage}%
+  \vspace{3cm}
+  \begin{minipage}[t]{5cm}
+    \centering
+    \includegraphics[height=120px]{Implementation/relax_many.png}
+    \captionof{figure}{The relaxation algorithm applied with up to 20'000 iterations. Growing the lower right edge caused other nodes to translate, but the lengths of incident edges stayed the same.}
+    \label{fig:spider_in_progress}
+  \end{minipage}
+\end{figure}
+
 \section{Export}
+The export of 3D printable files is one of the main contributions of TrussFab. It enables users to create their designed objects in the real world without the need to understand the complex hinge systems necessary to create the desired movements.\\
+The export functionality consists of multiple steps. First, the system determines where hinges need to be placed and where static hubs are sufficient. After that, the possible motion has to be maximized. The bottles need a minimum distance to the rotation center of each hub in order to not collide with each other, to properly secure them using the cuffs and align them with the hinge movement.
 
 \subsection{Hinge Placement}\label{sec:hinge_placement_impl}
+We use an empirical approach to determine the placement of hinges. Using the physics engine, we move all actuators, one after another, and measure the angular difference between adjacent triangles. If the difference exceeds a certain threshold, the common node of these two triangles needs a hinge connecting adjacent edges.\\
+First, all static groups are determined. Static groups are connected structures, in which no rotation is happening, while actuators are moving.
 
 \subsection{Minimization Logic}
+In order to achieve the maximum amount of motion, while keeping the minimum amount of printing time, we needed to find a solution for minimizing hinge and hub sizes.\\
+For hinges, three lengths are of importance.
+\begin{figure}[ht]
+  \centering
+  \begin{minipage}[t]{5cm}
+    \centering
+    \includegraphics[height=120px]{Implementation/hinge_lengths.png}
+    \captionof{figure}{L1 and L2 lenghts of a hinge part}
+    \label{fig:leg_asset}
+  \end{minipage}%
+  \vspace{3cm}
+  \begin{minipage}[t]{5cm}
+    \centering
+    \includegraphics[height=120px]{Implementation/hinge_l3.png}
+    \captionof{figure}{L3 length of a connector}
+    \label{fig:spider_in_progress}
+  \end{minipage}
+\end{figure}
 - elongates and shortens edges so that maximum movement is possible with minimum material use\\
 - uses iterative relaxation algorithm, will be explained in \ref{sec:relaxation}
 
