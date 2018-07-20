@@ -1,18 +1,18 @@
 \chapter{Introduction}\label{ch:introduction}
-Personal fabrication devices, such as 3D printers, are already widely used for rapid prototyping and allow non-expert users to create interactive machines, tools and art. As consumer-grade 3D printers are usually desktop-sized, the size of these objects is, however, fairly limited. \trussFabName{} aims to enable users to create large-scale dynamic objects using desktop-sized 3D printers. Scale can be achieved by creating multiple small-sized objects and connecting them to each other. If all parts of a large object would be 3D printed, this process would take a long time and special large-size 3D printers would be needed. Our solution to this problem is to take ready-made objects, like empty plastic bottles, and only print the connectors that keep them together.\\
+Personal fabrication devices, such as 3D printers, are already widely used for rapid prototyping and allow non-expert users to create interactive machines, tools and art. As consumer-grade 3D printers are usually desktop-sized, the size of these objects is, however, fairly limited. TrussFormer aims to enable users to create large-scale dynamic objects using desktop-sized 3D printers. Scale can be achieved by creating multiple small-sized objects and connecting them to each other. If all parts of a large object would be 3D printed, this process would take a long time and special large-size 3D printers would be needed. Our solution to this problem is to take ready-made objects, like empty plastic bottles, and only print the connectors that keep them together.\\
 To aid users in this process, we developed a software simulation that can create objects which are capable of handling the substantial forces large object have. We achieve this by providing stable primitives which can be attached together. These primitives resemble truss structures - beam-based constructions creating closed triangle surfaces, which are sturdy by design and material-efficient.\\
 Such objects have been shown to support a wide range of applications, like furniture or art installation. However, these systems are limited to static structures. We want to extend this area of architecture by providing possibilities to create large-scale \textit{kinematic} truss structures. Creating movement in truss structures comes with various challenges. TrussFormer is an end-to-end-system that lets the user create such kinematic structures without needing to have knowledge about the physical properties of moving trusses. It incorporates an editor for virtually creating the desired object, a physics engine that can simulate movement and visualize occurring forces and an export functionality that can convert the created design into 3D printable files.\\
 - TODO:\\
 - node-link-structure?\\
-\section{TrussFab}
+\section{TrussFormer’s underlying structure achieves stability}
 - create big structures\\
 - create them quickly and cheaply\\
 - explain concept of nodes and edges\\
-\section{TrussFormer}
+\section{Adding movement using Variable Geometry Trusses}
 - make structures move\\
 - observe forces during movement\\
 - create animation\\
 - define hinges\\
-\section{TrussControl}
+\section{TrussFormer Editor}
 - closed-loop movement control\\
 - automatic conversion of simulation animation to arduino code\\
