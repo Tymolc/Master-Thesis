@@ -111,30 +111,23 @@ On top of the coloring of edges, the user can also use the \textit{sensor tool} 
 After the object was sufficiently tested in the editor, it is time to print the connectors and assemble the final object. To do this, TrussFormer will calculate which connections will need to move and which can be static in the printed object. It also takes into account constraints, such as the minimum distance from a bottle neck to the center of a hinge, which might otherwise restrict movement. This process will be explained in detail in Section \ref{sec:hinge_placement_impl}. This information is used to create OpenSCAD files - a modeling language which we use to modify templates of hubs and hinges.
 
 \subsection{Export}
-At first, our abstract description of the object has to be converted into a physical representation. In order to achieve this, we used a modeling language called \textit{OpenSCAD}. The \textit{Export Hubs and Hinges} button will automatically morph the structure into a statically sound object, i.e. it will elongate and shorten edges so, that the ideal amount of movement is possible. \improvement{This needs to be more detailed for sure!!}\\
-The resulting arrangement of nodes and edges will be transferred to OpenSCAD. OpenSCAD enables us to create 3D structures programmatically. We use it to create 3-dimensional primitives, such as spheres, cubes or cylinders, and to apply set operations, like \textit{difference} or \textit{union} on them.\\
-OpenSCAD provides an editor which can be used to prototype a model. This editor, including some example operations can be seen in Figure \ref{fig:openscad_overview}. We used this editor to create the template functions used for creating the final hinge and hub models. This will be explained in more detail in Section \ref{sec:openscad_impl}.
+When users are satisfied with their design (structure, movement, and animation), they click the \textit{fabricate} button (15). This will trigger TrussFormers' hinge generation procedure and create files which can be used for 3D printing. In order to control the structure the same way as in the animation pane, the animation will also be exported in an Arduino-readable format. Instructions for building will also be provided.
 \begin{figure}[h!]
-    \includegraphics[width=\textwidth]{Walkthrough/openscad_overview.png}
+    \includegraphics[width=\textwidth]{Walkthrough/export_and_hinges.png}
     \centering
-    \caption{Overview of the OpenSCAD editor}
-    \label{fig:openscad_overview}
+    \caption{(a) To fabricate our T-Rex model, TrussFormer exports: (b) the appropriate 3D printable hinging-hubs for fabricating the structure, (c) and the actuator specifications that inform the users which one to buy. TrussFormer also exports the animation sequence for an Arduino.}
+    \label{fig:export_and_hinges}
 \end{figure}
 
-\subsubsection{Hubs}
-
-\subsubsection{Hinges}
-
-\subsubsection{Animation}
-
-\subsubsection{Instructions}
-- how many screws are needed? How long do actuators have to be? ...
+If the fabricate button is pressed, TrussFormers' hinge generation procedure is triggered. It analyzes the structure, ensuring that the final object will have the maximum possible movement and creating 3D printable hinge and hub geometries. The T-Rex consists of 42 3D printed hubs and 135 unique hinge pieces.\\
+Next, the animation pattern is exported to Arduino code. The user can upload this code directly to their microcontroller.\\
+As a last step, specifications containing information about the force, speed and motion range of the actuators necessary for achieving the desired animation pattern. These actuators can be obtained as standardized components. The specifications also include information about the number and size of screws needed for assembly.
 
 \subsection{Printing the Parts}
-Each OpenSCAD file represents a single part in the structure. These files can easily be converted to \textit{.stl} files, which are typically used for 3D printing. These files have to be imported into any 3D printing software, arranged efficiently and sent to a 3D printer. Printing of one hinge part using an UltiMaker 3 printer takes about 20 minutes.\unsure{evaluate!?}
+Each exported file represents a single part in the structure. These files can easily be converted to \textit{.stl} files, which are typically used for 3D printing. Using a 3D printing software, the 3D objects can be arranged and sent to a 3D printer. Printing of one hinge part using an UltiMaker 3 printer takes about 40 minutes.
 
 \subsection{Assembling the Structure}
-The resulting hubs and hinges contain an ID system for easy assembly. Each part of a node has the node ID printed on. That way it is easy to find out which hinge-parts belong together. Additionally, each edge elongation \info{Verlängerung einer Edge, also quasi die Elongation. FIND A BETTER NAME!} contains the id of the connected edge. A compound elongation, which is the usual case for a hinge, is therefore assembled by finding two parts with the same node and edge ID. For static hubs, this concept is similar, but of course these do not have to be assembled.\\
+The resulting hubs and hinges contain an ID system for easy assembly. Each part of a node has the node ID printed on. That way it is easy to find out which hinge-parts belong together. Additionally, each edge elongation contains the id of the connected edge. A compound elongation, which is the usual case for a hinge, is therefore assembled by finding two parts with the same node and edge ID. For static hubs, this concept is similar.\\
 Two connectors with different node IDs but the same edge IDs will be connected by a link.
 \begin{figure}[h!]
     \includegraphics[width=\textwidth]{Walkthrough/hinge.JPG}
