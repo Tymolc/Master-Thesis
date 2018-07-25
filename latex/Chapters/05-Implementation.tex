@@ -1,19 +1,18 @@
 \chapter{Implementation}\label{ch:implementation}
-Our editor is based on an existing plugin for the 3D modeling software SketchUp. It implemented placing of truss primitives, modifying these structures and asynchronously simulating forces acting on the objects. We did a rewrite of this plugin, aiming to achieve a more maintainable and readable code-base and enabling us to use newer versions of SketchUp, as the old version was only compatible to SketchUps 2016 version. The main goal of our new plugin was to create dynamic truss structures. This required us to introduce a real-time physics engine, special physics components and animation functionalities. Our plugin supports the user in the creation of large-scale dynamic objects by visualizing the forces acting on the object, while the user can move the object interactively. It can also create animations that play automatically, warning the user if the forces during the animation exceed the force limits of the structure and helping them in finding a better approach. Furthermore, it aids the user in creating the most efficient movement layout in the complex truss structure.\\
-The user interface is implemented in JavaScript, using the node.js framework for advanced features. The connection to SketchUp and most functionalities are written in Ruby. The physics engine is based on a C++ engine, using a Ruby wrapper to embed it in our code base.\\
+Our editor is implemented as a plugin for the 3D modeling software \textit{SketchUp}. Our system is composed of an Editor, which can place truss primitives and physics components and modify created structures, a physics simulation, which can calculate forces and movement interactively, and an export component, which translates the object in the editor into 3D printable files. The main goal of our plugin is to create dynamic truss structures. Our plugin supports the user in the creation of large-scale dynamic objects by visualizing the forces acting on the object, while the user can move the object interactively. It can also create animations that play automatically, warning users if the forces during the animation exceed the force limits of the structure and helping them in finding a better approach. Furthermore, it aids the user in finding the most efficient movement layout in the complex truss structure.\\
+The user interface is implemented in JavaScript, using the node.js framework for advanced features. The connection to SketchUp and most functionalities are written in Ruby. The physics simulation is based on a C++ physics engine, using a Ruby wrapper to embed it in our code base.\\
 After explaining the architecture, this chapter will demonstrate the tools and functionalities in greater detail and explain the underlying components.
 
 \section{Architecture}
-The software can be divided into four components. The most user-facing one is the TrussFormer Designer. It contains the user interface and the construction functionalities. The other components can be seen as extensions to the designer. The \textit{Force Analysis} calculates tension force on the created structure. The tensions forces are calculated using an adapted version of the \textit{MSPhysics}\footnote{https://extensions.sketchup.com/en/content/msphysics} physics engine, which is a Ruby wrapper around the C++ physics engine \textit{NewtonDynamics}\footnote{http://newtondynamics.com/forum/newton.php}.\\
-This physics engine is also used by another component, the \textit{Hinge Placement Algorithm}. It uses the physics features to detect changing angles between Edges, indicating the need for a hinge at a Hub.\\
-The export function using OpenSCAD will be explained in section \ref{sec:openscad_impl}.
+The software can be divided into four components. The most user-facing one is the TrussFormer Editor. It contains the user interface and the construction functionalities. The other components can be seen as extensions to the editor. The \textit{Force Analysis} calculates tension force on the created structure. The tensions forces are calculated using an adapted version of the \textit{MSPhysics}\footnote{https://extensions.sketchup.com/en/content/msphysics} physics engine, which is a Ruby wrapper around the C++ physics engine \textit{NewtonDynamics}\footnote{http://newtondynamics.com/forum/newton.php}.\\
+This physics engine is also used by another component, the \textit{Export Functionality}. It uses the physics features to detect changing angles between Edges, indicating the need for a hinging hub.
 \begin{figure}[!h]
     \includegraphics[width=\textwidth]{Implementation/TrussFormer_Architecture_Overview.png}
     \centering
     \caption{TrussFormer Architecture}
     \label{fig:architecture}
 \end{figure}
-The structure diagram in figure \ref{fig:architecture} shows an overview of the components. Details for each component will be explained later in this chapter.
+The structure diagram in figure \ref{fig:architecture} shows how the components fit into our system. Details for each component will be explained later in this chapter.
 
 All components are stored in a graph structure. The building parts are \textit{Edges}, \textit{Nodes} and \textit{Triangles}. They all inherit \textit{GraphObject}. The purpose of these objects is providing user-facing functionalities and storing lower-level components. An overview of the graph structure can be seen in \ref{fig:graph}.\\
 The \textit{Graph} is implemented as a Singleton \improvement{explain what a Singleton is} that stores and provides access to all GraphObjects, creates new ones and provides convenience functions for user interactions, such as finding the node closest to the mouse cursor. As this class is a singleton, every module of the software has access to the objects.\\
@@ -126,14 +125,88 @@ Class AnimationPane
   end
 end
 \end{lstlisting}
-As can be seen in listing \ref{lst:ui_proxy}, these proxy classes have two ways of communicating between Ruby and JavaScript. The \textit{execute\_script} function on the HtmlDialog can call arbitrary code on the UI element at any time. It is possible to pass ruby primitives, such as strings, integers or arrays, through this function call. This makes it possible to a) have complex interactions with the user interface and b) keep state on the ruby side and focus on visualization in JavaScript.\\
+As can be seen in Listing \ref{lst:ui_proxy}, these proxy classes have two ways of communicating between Ruby and JavaScript. The \textit{execute\_script} function on the HtmlDialog can call arbitrary code on the UI element at any time. It is possible to pass ruby primitives, such as strings, integers or arrays, through this function call. This makes it possible to a) have complex interactions with the user interface and b) keep state on the ruby side, while focusing on visualization in JavaScript.\\
 The other way works equally asynchronously. JavaScript can send signals to SketchUp. The SketchUp side can register to those callbacks and execute ruby code.
 
 \subsection{Tools}
+Users interact with the SketchUp environment using tools. These tools are accessed by buttons in TrussFormers sidebar. The majority of them was explained in Chapter \ref{ch:walkthrough}. This section will explain the more complex tools.
 
-\subsubsection{Stability Check}
+\subsubsection{Stability Check}\todo{This probably has to be a subsection of simulation}
+The stability check can be used to test the created structure statically in different poses. It is implemented as part of the simulation and intended to be either run during the creation of the structure (especially after placing a new actuator) or by triggering it manually. The stability check places all actuators in the structure in a combination of different poses. Each actuator will be placed in full extension, its middle position and full retraction in a combination with the other actuators in these positions as well. So, if the structure has four actuators, like our T-Rex, this would result in $3 ^ 4 = 81$ different combinations.\\
+Even though the simulation is normally used for dynamic force analysis and does not, on its own, provide the possibility to disable inertial forces, which are unwanted in this case, there is a possibility to work around this issue. By making all joints as stiff as possible, we prevent the structure from causing unwanted movement, because it completely resists inertia.\\
+Actuators do not have the ability to ``jump'' between two positions, which means the simulation has to extend or retract the pistons over time. As this step should be run in the background and provide timely results, this movement has to occur as fast as possible. If we were to move the actuators at maximum speed, the occurring force would destroy the structure. Our way around this is to make the structure indestructible during stability check. This tool should provide the maximum forces to the user. If the structure would break, the maximal possible force would be the breaking force and even higher forces could not be detected.\\
+For each combination of actuator positions, the actuator parameters are set to the pose checking configuration (i.e. infinite breaking force, very high speed and maximum stiffness). The internal position controller of each actuator is set to the position according to the configuration. After all actuators are set up, the simulation runs for 1 second in the background, without visualizing the forces, in order to move the actuators and settle the structure. Then, the simulation is run again for about 10 world updates, while recording the maximum tensions in a global map. The highest force in these tension will be returned and connected to this specific combination. As a last step, users gets a list of piston combinations and the resulting forces, so they can observe which pose causes the highest loads on the structure.
+
+\begin{lstlisting}[language=Ruby, label={lst:pose_check}, caption=excerpt from UI callbacks]
+  def check_pose(combination)
+    highest_force = 0
+
+    Graph.instance.edges.each_value do |edge|
+      edge.link.joint.stiffness = 0.999
+    end
+    # move them to the proper position
+    combination.each do |id, pos|
+      actuator = @pistons[id]
+      actuator.joint.breaking_force = 0
+      actuator.joint.rate = MAX_SPEED
+      actuator.joint.controller = case pos
+                                  when -1
+                                    actuator.min
+                                  when 0
+                                    0
+                                  when 1
+                                    actuator.max
+                                  end
+    end
+
+    update_world_headless_by(1) # settle down
+
+    # record
+    @max_link_tensions.clear
+    update_world_headless_by(0.2, true)
+
+    Graph.instance.edges.each_value do |edge|
+      force = @max_link_tensions[edge.id]
+      highest_force = force if force.abs > highest_force.abs
+    end
+    highest_force
+  end
+\end{lstlisting}
 
 \subsubsection{Automatic Actuator Placement}
+The \textit{Automatic Actuator Placement} tool aims is the most supporting method in creating motion in the truss structure. Users can demonstrate the movement they want to achieve by dragging a node to a certain position. The tool will automatically turn an edge into an actuator that can move the selected node closest to the desired position.\\
+The process behind it iteratively turns each edge into an actuator, moves it to its maximum and minimum position using the physics simulation and observes the selected node for position changes. Each actuator is tested for two seconds in the background. Similar to the pose checking tool, this simulation is ``headless'', meaning forces are not visualized. Also, fixed edges, meaning they are connected to pods, will not be tested. After each world update, the position of the observed node is compared to the desired position and if the distance is less than in a previous world update, this distance is stored. The distance is calculated using the formula
+\begin{equation}
+  d(P1, P2) = \sqrt{(P1_x - P2_x)^2 + (P1_y - P2_y)^2 + (P1_z - P2_z)^2}
+\end{equation}
+
+The shortest distance will be returned and compared to the result of other edges. If this actuator moved the node closest to the desired position, the edge and distance is promoted to the new candidate. The tested edge will be changed back to its original type.\\
+After all edges are tested, the current candidate will be turned into an actuator and the view is updated for the user again.
+
+\begin{lstlisting}[language=Ruby, label={lst:pose_check}, caption=excerpt from UI callbacks]
+  def test_pistons
+    closest_distance = Float::INFINITY
+    best_piston = nil
+    Graph.instance.edges.each_value do |edge|
+      next if edge.fixed?
+      previous_link_type = edge.link_type
+      create_actuator(edge)
+      simulation = Simulation.new
+      simulation.setup
+      simulation.schedule_piston_for_testing(edge)
+      simulation.start
+      distance = simulation.test_pistons_for(2, @node, @desired_position)
+      if distance < closest_distance
+        closest_distance = distance
+        best_piston = edge
+      end
+      simulation.reset
+      reset_actuator_type(edge, previous_link_type)
+    end
+    create_actuator(best_piston)
+  end
+\end{lstlisting}
+
 
 \subsubsection{Correct Forces}
 
