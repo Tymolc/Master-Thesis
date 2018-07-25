@@ -131,6 +131,10 @@ The other way works equally asynchronously. JavaScript can send signals to Sketc
 \subsection{Tools}
 Users interact with the SketchUp environment using tools. These tools are accessed by buttons in TrussFormers sidebar. The majority of them was explained in Chapter \ref{ch:walkthrough}. This section will explain the more complex tools.
 
+\subsubsection{Mouse Input Helper}
+Most tools require mouse interactions. We wrote a helper class that handles these mouse inputs and provides functions that let us interact with existing TrussFormer geometry. SketchUp itself provides mouse handling functionalities, such as returning the point in the SketchUp world, the mouse is pointing at, essentially converting a 2D screen position into a 3D world position.\\
+Often, users will want to use tools on existing TrussFormer objects. To do that, our MouseInput can snap to the different parts of geometry: Triangles, Nodes, Edges or Pods. Based on the SketchUp provided position, the closest of these snappable objects, that lies within a certain radius, will be selected and its position returned to the tool that uses the MouseInput. If the mouse can not snap to an object, a point on the ground that intersects with the view plane of the camera will be selected.
+
 \subsubsection{Stability Check}\todo{This probably has to be a subsection of simulation}
 The stability check can be used to test the created structure statically in different poses. It is implemented as part of the simulation and intended to be either run during the creation of the structure (especially after placing a new actuator) or by triggering it manually. The stability check places all actuators in the structure in a combination of different poses. Each actuator will be placed in full extension, its middle position and full retraction in a combination with the other actuators in these positions as well. So, if the structure has four actuators, like our T-Rex, this would result in $3 ^ 4 = 81$ different combinations.\\
 Even though the simulation is normally used for dynamic force analysis and does not, on its own, provide the possibility to disable inertial forces, which are unwanted in this case, there is a possibility to work around this issue. By making all joints as stiff as possible, we prevent the structure from causing unwanted movement, because it completely resists inertia.\\
@@ -181,7 +185,8 @@ The process behind it iteratively turns each edge into an actuator, moves it to 
 \end{equation}
 
 The shortest distance will be returned and compared to the result of other edges. If this actuator moved the node closest to the desired position, the edge and distance is promoted to the new candidate. The tested edge will be changed back to its original type.\\
-After all edges are tested, the current candidate will be turned into an actuator and the view is updated for the user again.
+After all edges are tested, the current candidate will be turned into an actuator and the view is updated for the user again.\\
+This method is works as a naïve approximation, meaning it does not guarantee that the desired position will be reached exactly.
 
 \begin{lstlisting}[language=Ruby, label={lst:pose_check}, caption=excerpt from UI callbacks]
   def test_pistons
@@ -207,8 +212,31 @@ After all edges are tested, the current candidate will be turned into an actuato
   end
 \end{lstlisting}
 
-
 \subsubsection{Correct Forces}
+
+\subsection{Load/Save}
+In order to save created objects and work on them later, TrussFormer provides a save and load function. The save function stores the current geometry in JSON files. On activation of the tool, a message box appears, asking the user to select a surface, which will be used to attach the object to existing geometry or placing it on the floor on import.\\
+The JSON file is a depiction of the graph. It contains attributes about nodes and edges necessary to recreate the object later.\\
+Important attributes for nodes are:
+\begin{itemize}
+  \item the ID
+  \item the position (x, y, z)
+  \item whether or not a pod is attached
+\end{itemize}
+By exporting the ID of a node, the export to 3D printable files will be consistent as well.
+Edges require the following information:
+\begin{itemize}
+  \item the ID
+  \item the first node's ID
+  \item the second node's ID
+  \item the link type (i.e. bottle link or actuator)
+  \item the bottle type, if applicable (small or large bottle)
+  \item the piston group, if applicable
+  \item the length of the first elongation
+  \item the length of the second elongation
+\end{itemize}
+The animation is also stored in the JSON file. If actuators are present, the keyframe positions are stored together with the piston group of the actuator.\\
+The load function takes this generated JSON and recreates the graph according to the provided information. The animation pane will also be filled with the exported animation.
 
 \subsection{Relaxation Algorithm}\label{sec:relaxation}
 The relaxation algorithm is used to distribute the change of an edge over the whole structure. This way, we can adapt edges without changing the overall appearance of the object.\\
@@ -253,8 +281,24 @@ def relax
   \end{minipage}
 \end{figure}
 
+\subsection{Animation}
+The animation pane is inspired by existing animation software, such as Unity\footnote{https://unity3d.com/}. It is based on so-called keyframes. A keyframe always acts on a certain piston group. It indicates the extension of all actuators in this group at a given time. Keyframes are placed on a timeline, which stretches over a set length of time. By placing keyframes on this timeline, a curve is created, which demonstrates the movement of the actuator group over this time.\\
+Keyframes are positioned by using a slider and placing a vertical line at the desired point in time. The slider sets the extension of the actuator, which is interactively indicated in the editor. Pressing the \textit{Add Keyframe} button, places the keyframe with the set extension in the timeline.\\
+The created animation can be played in two different modes: single and looping run. The animation will be played at a constant speed, which is coupled to the system clock. That means that one second of the animation will correlate to one second in real-time. An internal counter keeps track of the current position in the timeline at any given time and triggers a new actuator movement after passing a keyframe.\\
+The speed of an actuator is determined by the distance from the current keyframe to the next and the desired change in amplitude. The y position of the keyframe can be seen as a percentage of complete extension. If the keyframe is on the top of the timeline, it has a value of 1 and each actuator in the group will be fully expanded, disregarding its length. Similarly, if the keyframe is on the bottom, its value is 0 and all actuators are fully contracted. The x value of the keyframe is also mapped in [0, 1], with 0 being the beginning of the timeline and 1 the end.
+\begin{equation}
+  \Delta_y = next\_keyframe.y - last\_keyframe.y\\
+\end{equation}
+\begin{equation}
+  \Delta_x = next\_keyframe.x - last\_keyframe.x\\
+\end{equation}
+\begin{equation}
+  v = \frac{\Delta_y * (actuator.max\_length - actuator.min\_length)}{((\Delta_x * timeline\_length) \bmod timeline\_length}
+\end{equation}
+The speed of an actuator is calculated by multiplying the delta of the expansion component of the last and the next keyframe with the range of motion of an actuator and dividing it by the time component of these keyframes, multiplied by the timeline length, modulo the timeline length to account for looping of the animation.
+
 \section{Physics Simulation}\label{sec:simulation}
-TrussFormers' force analysis used to be based on \textit{Finite Element Analysis}, calculated asynchronously on a remote server. This provided fairly accurate results and did not require a powerful computer to run. However, TrussFormers' responsibilities evolved during the course of its life and we decided to implement a real-time physics engine inside of our plug-in.\\
+TrussFormer's force analysis used to be based on \textit{Finite Element Analysis}, calculated asynchronously on a remote server. This provided fairly accurate results and did not require a powerful computer to run. However, TrussFormers' responsibilities evolved during the course of its life and we decided to implement a real-time physics engine inside of our plug-in.\\
 We decided to use the SketchUp plug-in \textit{MSPhysics} by Anton Synytsia\footnote{https://github.com/AntonSynytsia/}. MSPhysics is capable of calculating real-time physics on SketchUp elements and creates a customizable physics world in the modeling software. This MSPhysics world has parameters, like gravity, update timestep, and solver model which we can adapt to maximize accuracy and speed of the simulation.\\
 The simulation uses the animation feature of SketchUp. A ruby class can act as a Sketchup::Animation when it implements the \textit{nextFrame} method, which must return true until the animation ends. This method is called every time SketchUp receives the signal that a new frame should be rendered. We do that by calling \textit{view.show\_frame} (s.a. listing \ref{lst:simulation}), which will trigger SketchUp to start rendering the next frame based on the simulation updates that happened earlier. We call this function as the first step in our nextFrame method, because this way, SketchUp can start rendering, while our simulation does the next physics update.\\
 \begin{lstlisting}[language=Ruby, label={lst:simulation}, caption=Simulation nextFrame method]
