@@ -295,7 +295,8 @@ The speed of an actuator is determined by the distance from the current keyframe
 \begin{equation}
   v = \frac{\Delta_y * (actuator.max\_length - actuator.min\_length)}{((\Delta_x * timeline\_length) \bmod timeline\_length}
 \end{equation}
-The speed of an actuator is calculated by multiplying the delta of the expansion component of the last and the next keyframe with the range of motion of an actuator and dividing it by the time component of these keyframes, multiplied by the timeline length, modulo the timeline length to account for looping of the animation.
+The speed of an actuator is calculated by multiplying the delta of the expansion component of the last and the next keyframe with the range of motion of an actuator and dividing it by the time component of these keyframes, multiplied by the timeline length, modulo the timeline length to account for looping of the animation.\\
+As actuators in a group can have different lengths, they will only receive the $\Delta_y$ value, combining it with their possible extension length and the time component. The simulation will then trigger the movement of the given actuators.
 
 \section{Physics Simulation}\label{sec:simulation}
 TrussFormer's force analysis used to be based on \textit{Finite Element Analysis}, calculated asynchronously on a remote server. This provided fairly accurate results and did not require a powerful computer to run. However, TrussFormers' responsibilities evolved during the course of its life and we decided to implement a real-time physics engine inside of our plug-in.\\
@@ -333,9 +334,15 @@ With the knowledge of the new physics calculations, we can send information abou
 Once the physics portion of the rendering step is done, our own graph structure has to be updated. For that, each edge and node updates their own positions and transformations based on their internal physics objects.\\
 As a last step, sensor data is send to the respective UIs in order to draw a chart depicting physical data.
 
+\subsection{Actuators}
+Actuators are implemented using the \textit{TrussFab::PointToPointActuator} joint. These joints provide position control. The \textit{controller} of the joint can be set to a length in m relative to a starting position (per default the middle position). This tells the simulation, that this joint wants to change its length to the provided value. Dependent on the speed of the joint, it will approach this position over multiple world iterations. A setting that can influence the motion of actuator joints is the damping factor, which can be set to a ratio of extension (with 0 being full contraction and 1 being full extension). The damping factor will linearly slow down the actuator starting from the set value, approaching the end with a smoother, less radical motion.
+
 \subsection{Force Control}
+Instead of position controlled joints, TrussFormer also provides joints with force control. These joints do not have a controller that can be set to a length, but a force function. The force can be set dynamically during the simulation, making force controlled joints a very flexible way to create motion.\\
+Possible uses for these joints are springs. A spring exerts more force, the further it is compressed. Transferring this concept to our cylindrical links, such a spring would produce more force, the smaller the distance between two nodes is, according to the formula $F = -k * x$, with k being a spring constant, depending on the material or thickness of the spring and x being the difference between the uncompressed length of the spring (e.g. the actuator in its full extension) and its current length.
 
 \subsubsection{PID}\label{sec:pid}
+Another use case for force-controlled joints is PID controlled actuation.
 
 \subsection{Evaluation}
 We aimed to make our software simulation as accurate to the real-world object as possible. To calibrate the simulation values, we therefore measured the forces of our T-Rex example.\\
