@@ -342,7 +342,11 @@ Instead of position controlled joints, TrussFormer also provides joints with for
 Possible uses for these joints are springs. A spring exerts more force, the further it is compressed. Transferring this concept to our cylindrical links, such a spring would produce more force, the smaller the distance between two nodes is, according to the formula $F = -k * x$, with k being a spring constant, depending on the material or thickness of the spring and x being the difference between the uncompressed length of the spring (e.g. the actuator in its full extension) and its current length.
 
 \subsubsection{PID}\label{sec:pid}
-Another use case for force-controlled joints is PID controlled actuation.
+Another use case for force-controlled joints is PID controlled actuation. A proportional-integral-derivative (PID) controller is a mechanism for closed-loop control. It uses sensor values from the system, in our case the length of the actuator, and gives feedback to the control unit.\\
+A PID controller will continuously calculate an error value as the difference between a desired value, e.g. the actuator position to be reached, and a current ``process variable''. The process variable is calculated as the weighted sum of the proportional, integral and derivative control terms. The controller attempts to minimize the error value by adjusting these terms.\\
+The proportional term depicts a value proportional to the current error value. If the error is large, e.g. if the actuator is fully contracted, but should be fully expanded, the proportional value is large as well, telling the control unit to produce high pressure. The proportional term alone will, however, never reach the desired point, because the smaller the error value becomes, the smaller the produced pressure will be. Also it can not account for inertia of an object, as it will only produce a force in the other direction (i.e. a breaking force), if the sensor values overshot the desired position. This will create an oscillating motion around the desired position.\\
+The integral part takes past error values into account, which are integrated over time. It cumulates residual error values, left behind by proportional control. If the error gets smaller, the integral term will stop growing. This will compensate the proportional term approaching zero.\\
+The P and I terms will already achieve a reasonable result. The derivative term will optimize this result further. It can be seen as an estimate of the future, based on the error value's rate of change. The effect of the derivative term is that an extra control factor is included if the error rate increases and a damping factor added if the rate decreases.
 
 \subsection{Evaluation}
 We aimed to make our software simulation as accurate to the real-world object as possible. To calibrate the simulation values, we therefore measured the forces of our T-Rex example.\\
@@ -363,7 +367,7 @@ We use an empirical approach to determine the placement of hinges. Using the phy
 First, all static groups are determined. Static groups are connected structures, in which no rotation is happening, while actuators are moving.
 
 \subsection{Minimization Logic}
-In order to achieve the maximum amount of motion, while keeping the minimum amount of printing time, we needed to find a solution for minimizing hinge and hub sizes.\\
+In order to achieve the maximum amount of motion, while keeping the minimum amount of printing time, we created a solution for minimizing hinge and hub sizes.\\
 For hinges, three lengths are of importance. These lengths consist of the distance from the rotation center to the lower side of the hinge connector (l1 distance), the height of the connector itself (l2 distance) and an optional third length being the elongation of this hinge, i.e. the length of the edge connector (l3 distance).
 TODO: I am actually not sure if we do anything special here. Check this.
 \begin{figure}[ht]
@@ -386,3 +390,11 @@ TODO: I am actually not sure if we do anything special here. Check this.
 - uses iterative relaxation algorithm, will be explained in \ref{sec:relaxation}
 
 \subsection{Generating the 3D Models}\label{sec:openscad_impl}
+In order to get printable files, our abstract description of the object has to be converted into a physical representation. To achieve this, we used a modeling language called \textit{OpenSCAD}. After optimizing the structure for the most possible movement, the resulting arrangement of nodes and edges will be transferred to OpenSCAD. OpenSCAD enables us to create 3D structures programmatically. We use it to create 3-dimensional primitives, such as spheres, cubes or cylinders, and to apply set operations, like \textit{difference} or \textit{union} on them.\\
+OpenSCAD provides an editor which can be used to prototype a model. This editor, including some example operations can be seen in Figure \ref{fig:openscad_overview}. We used this editor to create the template functions used for creating the final hinge and hub models.
+\begin{figure}[h!]
+    \includegraphics[width=\textwidth]{Implementation/openscad_overview.png}
+    \centering
+    \caption{The OpenSCAD editor containing some example code.}
+    \label{fig:force_measurement}
+\end{figure}
