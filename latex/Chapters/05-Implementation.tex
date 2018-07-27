@@ -328,7 +328,7 @@ With the knowledge of the new physics calculations, we can send information abou
 \begin{figure}[h!]
     \includegraphics[width=\textwidth]{Implementation/Forces.png}
     \centering
-    \caption{Visualization of forces acting on edges. Blue - tension force, red - compression force, white - little or no force}
+    \caption{TEMPORARY Visualization of forces acting on edges. Blue - tension force, red - compression force, white - little or no force}
     \label{fig:force_visualization}
 \end{figure}
 Once the physics portion of the rendering step is done, our own graph structure has to be updated. For that, each edge and node updates its positions and transformations based on their internal physics objects.\\
@@ -396,16 +396,23 @@ However, after Step 3, there might be hubs violating this condition, e.g. where 
 \end{figure}
 TrussFormer resolves violating connections using a backtracking algorithm that removes connections heuristically. After each removed connection, it checks the validity of the resulting hinge configuration for two constraints: (1) all edges around the node are still interconnected directly or indirectly with each other, and (2) no more than two hinges are connected at each axis. If these constraints are satisfied, a valid hinge configuration was found. The algorithm continues until it finds all valid configurations. If available, TrussFormer will select the configuration with closed hinge chain (Figure \ref{fig:triple_connection}d) over open chain (Figure \ref{fig:triple_connection}c), for stability reasons.
 
-\subsection{Minimization Logic}
-In order to achieve the maximum amount of motion, while keeping the minimum amount of printing time, we created a solution for minimizing hinge and hub sizes.\\
-For hinges, three lengths are of importance. These lengths consist of the distance from the rotation center to the lower side of the hinge connector (l1 distance), the height of the connector itself (l2 distance) and an optional third length being the elongation of this hinge, i.e. the length of the edge connector (l3 distance).
-TODO: I am actually not sure if we do anything special here. Check this.
+\subsection{Generating the 3D Models}\label{sec:openscad_impl}
+In order to get printable files, our abstract description of the object has to be converted into a physical representation. To achieve this, we use a modeling language called \textit{OpenSCAD}. After finding all hinge chains and static hubs, the resulting arrangement of nodes and edges will be transferred to OpenSCAD. OpenSCAD enables us to create 3D structures programmatically. We use it to create 3-dimensional primitives, such as spheres, cubes or cylinders, and to apply set operations, like \textit{difference} or \textit{union} on them.\\
+OpenSCAD provides an editor which can be used to prototype a model. This editor, including some example operations can be seen in Figure \ref{fig:openscad_overview}. We used this editor to create template functions used for creating the final hinge and hub models.\\
+\begin{figure}[h!]
+    \includegraphics[width=\textwidth]{Implementation/openscad_overview.png}
+    \centering
+    \caption{The OpenSCAD editor containing some example code.}
+    \label{fig:force_measurement}
+\end{figure}
+Our hinging and static hubs are fully parameterized. This way we make sure that all parts will fit together exactly in the final object. Hub configurations, such as the angle, the elongation, the ID, ..., are inserted into a template file and define the shape of the printed hub.
+
 \begin{figure}[ht]
   \centering
   \begin{minipage}[t]{5cm}
     \centering
     \includegraphics[height=120px]{Implementation/hinge_lengths.png}
-    \captionof{figure}{L1 and L2 lenghts of a hinge part}
+    \captionof{figure}{TEMPORARY L1 and L2 lenghts of a hinge part}
     \label{fig:leg_asset}
   \end{minipage}%
   \vspace{3cm}
@@ -415,16 +422,4 @@ TODO: I am actually not sure if we do anything special here. Check this.
     \captionof{figure}{L3 length of a connector}
     \label{fig:spider_in_progress}
   \end{minipage}
-\end{figure}
-- elongates and shortens edges so that maximum movement is possible with minimum material use\\
-- uses iterative relaxation algorithm, will be explained in \ref{sec:relaxation}
-
-\subsection{Generating the 3D Models}\label{sec:openscad_impl}
-In order to get printable files, our abstract description of the object has to be converted into a physical representation. To achieve this, we used a modeling language called \textit{OpenSCAD}. After optimizing the structure for the most possible movement, the resulting arrangement of nodes and edges will be transferred to OpenSCAD. OpenSCAD enables us to create 3D structures programmatically. We use it to create 3-dimensional primitives, such as spheres, cubes or cylinders, and to apply set operations, like \textit{difference} or \textit{union} on them.\\
-OpenSCAD provides an editor which can be used to prototype a model. This editor, including some example operations can be seen in Figure \ref{fig:openscad_overview}. We used this editor to create the template functions used for creating the final hinge and hub models.
-\begin{figure}[h!]
-    \includegraphics[width=\textwidth]{Implementation/openscad_overview.png}
-    \centering
-    \caption{The OpenSCAD editor containing some example code.}
-    \label{fig:force_measurement}
 \end{figure}
