@@ -1,10 +1,10 @@
 \chapter{Hardware}\label{ch:hardware}
-This chapter will talk about challenges and solutions we faced while finding connections for large-scale dynamic objects. It will explain the materials and methods used in transforming the TrussFormer-designed models into actual objects.\\
-Furthermore, this chapter will explain the techniques and hardware used to get the structure to move.
+The system presented in this paper makes use of a variety of mechanical components. This chapter will talk about mechanical challenges and our solutions that allow the construction of large-scale dynamic truss objects using 3D printed parts. It will explain the materials and methods used in creating a real-world object from a TrussFormer-designed model.\\
+Furthermore, this chapter will define the techniques and hardware employed in the structures.
 
 \section{Mechanical Components}
-We can differentiate between three essential building parts for our truss structures. \textit{Links} are the connecting and shaping parts. We used PET bottles for these parts, because they are readily available, cheap and sturdy.\\
-We have two different ways of connecting links. For dynamic connections, i.e. connections that allow movement of the structure, we use a \textit{hinge chain} system. Rigid connections use single-part objects, we call \textit{static hubs}.\\
+We can differentiate between three essential building parts for our truss objects. We call the structural components \textit{Links}. In our objects PET bottles are used as links, as they are readily available, cheap and sturdy.\\
+We have two different ways of connecting links. Rigid connections are comprised of \textit{static hubs}. For dynamic connections, i.e. connections that allow movement of the structure, we use \textit{hinging hubs}.\\
 Links, and static or hinging hubs are connected by purpose-designed \textit{cuffs}, which fit over the bottles' thread on one side and a connector part on the hub on the other side.
 
 \subsection{Edges of the structure}
@@ -43,7 +43,7 @@ To prevent the bottles from slipping out, a \textit{cuff} is clipped over the co
 \end{figure}
 
 \subsection{Hinging Hubs}
-We are using truss structures specifically because of their structural stability. In order to introduce movement to these constructions, we came across some challenges. Multiple edges have to be able to pivot around a common hub. This kind of spherical motion can potentially be achieved using ball joints, however these joints typically only allow for a connection of two edges without causing obstruction.\\
+In order to introduce movement to truss structures, we came across some challenges. Multiple edges have to be able to pivot around a common hub. This kind of spherical motion can potentially be achieved using ball joints, however these joints typically only allow for a connection of two edges without causing obstruction.\\
 We solve this issue by using a \textit{spherical joint mechanism}. As can be seen in Figure \ref{fig:hinge_chain}, these chains of hinges can connect multiple edges, which can all rotate around the same center. This is possible, because the axes of rotation do not occupy the rotational center itself, creating room for movement.\\
 \begin{figure}[h!]
     \includegraphics[width=\textwidth]{Hardware/hinge_chain.png}
@@ -110,4 +110,4 @@ We created a rudimentary motion-platform using closed-loop PID control (s.a. Sec
 
 \subsection{Arduino/Controllino}
 Also for our control module we have different approaches for open and closed loop control. Open loop control can be achieved with a simple \textit{Arduino}. It can be attached to a control interface, such as our MIDI controller, and translate the given inputs into signals for the valves.\\
-Another logic controller we used is the \textit{Controllino}. Apart from digital and analog inputs and outputs, it also features relays.\todo{Why do we use it? What can it do actually?}
+Another logic controller we used is the \textit{Controllino}.\todo{Why do we use it? What can it do actually?}

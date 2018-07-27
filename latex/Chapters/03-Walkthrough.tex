@@ -1,9 +1,10 @@
+
 \chapter{Walkthrough}\label{ch:walkthrough}
 \begin{figure}[h!]
     \includegraphics[width=.7\textwidth]{Walkthrough/UI.png}
     \centering
-    \caption{TrussFormers' tool pane}
-    \label{fig:tool_pane}
+    \caption{TrussFormers' toolbar}
+    \label{fig:toolbar}
 \end{figure}
 This chapter will present the functionalities of the system by showing the process of creating the T-Rex shown in figure \todo{Add image}. This will include all steps from creating the static structure, over introducing animation up to fabricating the final object.
 
@@ -11,7 +12,7 @@ This chapter will present the functionalities of the system by showing the proce
 As shown in Figure \ref{fig:modelling_t-rex}, the T-Rex model was first created as a stable static structure. With the help of TrussFormer, the user can make sure that the object to be created is structurally sound before adding motion. The provided tools can create sturdy primitives that are attached to each other, deform the structure, and check forces acting on each part of the object.
 
 \subsection{Primitives}
-Users can use predefined and structurally stable primitives to create their objects. Our system provides tools for creating octahedra and tetrahedra (Figure \ref{fig:tool_pane} (1)). Octahedra and tetrahedra are used for this task, because they consist entirely of triangular faces, which is an essential property for stable objects and widely used in heavy industry and architecture (e.g. cranes or bridges).
+Users can use predefined and structurally stable primitives to create their objects. Our system provides tools for creating octahedra and tetrahedra (Figure \ref{fig:toolbar} (1)). Octahedra and tetrahedra are used for this task, because they consist entirely of triangular faces, which is an essential property for stable objects and widely used in heavy industry and architecture (e.g. cranes or bridges).
 
 \subsection{How they are used}
 These primitives can be attached to existing triangle faces, as seen in Figure \ref{fig:modelling_t-rex} or placed on the ground. If the user desires, our system can also create single links between two nodes using the bottle link tool (2).\\
@@ -103,7 +104,7 @@ On top of the coloring of edges, the user can also use the \textit{sensor tool} 
 \begin{figure}[h!]
     \includegraphics[width=\textwidth]{Walkthrough/sensor.png}
     \centering
-    \caption{A sensor measures the force on the central actuator, and speed and acceleration on a node at the ``nose'' of the dino}
+    \caption{A sensor measures the force on the central actuator, and speed and acceleration on a node at the ``nose'' of the T-Rex}
     \label{fig:sensor}
 \end{figure}
 
