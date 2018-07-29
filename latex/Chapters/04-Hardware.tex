@@ -5,7 +5,7 @@ Furthermore, this chapter will define the techniques and hardware employed in th
 \section{Mechanical Components}
 We can differentiate between three essential building parts for our truss objects. We call the structural components \textit{Links}. In our objects PET bottles are used as links, as they are readily available, cheap and sturdy.\\
 We have two different ways of connecting links. Rigid connections are comprised of \textit{static hubs}. For dynamic connections, i.e. connections that allow movement of the structure, we use \textit{hinging hubs}.\\
-Links, and static or hinging hubs are connected by purpose-designed \textit{cuffs}, which fit over the bottles' thread on one side and a connector part on the hub on the other side, as seen in Figure \ref{fig:connector_with_cuff}.
+Links, and static or hinging hubs are connected by purpose-designed \textit{cuffs}, which fit over the bottles' thread on one side and a connector part on the hub on the other side, as seen in Figure \ref{fig:connector} (b).
 
 \subsection{Edges of the structure}
 We opted to use 1l (big) and 0.5l (small) reusable PET bottles because they have thicker walls, providing more stability and are abundantly available. Two bottles are connected on their bottom side by a wood screw, which is inserted using a special long-necked screwdriver. This process is depicted in Figure \ref{fig:connect_bottles}. The resulting link-lengths are:
@@ -15,7 +15,7 @@ We opted to use 1l (big) and 0.5l (small) reusable PET bottles because they have
 \item 46 cm - two small bottles
 \end{enumerate}
 
-\begin{figure}[h!]
+\begin{figure}[ht!]
     \includegraphics[width=\textwidth]{Hardware/connect_bottles.png}
     \centering
     \caption{(a) Connecting bottles with a wood screw using an extra-long screwdriver and (b) with a double-ended screw. (c) Single-bottle edges require a bottom connector}
@@ -28,25 +28,16 @@ Hubs are solid one-piece objects that can connect two or more links. They theref
 To prevent the bottles from slipping out, a \textit{cuff} is clipped over the connector and the bottle opening. The cuff is designed as a circular section, slightly larger than a semicircle. Its upper and lower end have different sizes: the smaller end fits over a rim on the hub connector, the larger one over an extrusion on the bottle neck. Due to its flexibility, the cuff acts like a spring, making it easy to clip over the bottle and connector, while giving enough stability once clipped on.
 
 \begin{figure}
-  \centering
-  \begin{minipage}{.5\textwidth}
+    \includegraphics[width=\textwidth]{Hardware/connectors.png}
+    \caption{(a) The connector is inserted into the bottle opening and (b) secured with a cuff.}
     \centering
-    \includegraphics[width=.9\linewidth, angle=270]{Hardware/connector.JPG}
-    \captionof{figure}{The connector is inserted into the bottle opening ...}
     \label{fig:connector}
-  \end{minipage}%
-  \begin{minipage}{.5\textwidth}
-    \centering
-    \includegraphics[width=.9\linewidth, angle=270]{Hardware/connector_with_cuff.JPG}
-    \captionof{figure}{... and secured with a cuff}
-    \label{fig:connector_with_cuff}
-  \end{minipage}
 \end{figure}
 
 \subsection{Hinging Hubs}
 In order to introduce movement to truss structures, we came across some challenges. Multiple links have to be able to pivot around a common hub. This kind of spherical motion can potentially be achieved using ball joints, however these joints typically only allow for a connection of two links without causing obstruction.\\
 We solve this issue by using a \textit{spherical joint mechanism}. As can be seen in Figure \ref{fig:hinge_chain}, these chains of hinges can connect multiple link, which can all rotate around the same center. This is possible, because the axes of rotation do not occupy the rotational center itself, creating room for movement.\\
-\begin{figure}[h!]
+\begin{figure}[ht!]
     \includegraphics[width=\textwidth]{Hardware/hinge_chain.png}
     \centering
     \caption{(a) spherical joint mechanism connecting 5 links. (b) rendering of TrussFormers' hinge chain design connecting 6 links.}
@@ -61,7 +52,7 @@ The hubs and connecting cuffs are printed using consumer-grade desktop FDM\footn
 A hub consumes about 50-150g of filament, resulting in a cost of 1-3€.
 
 \section{Actuation}
-\begin{figure}[h!]
+\begin{figure}[ht!]
     \includegraphics[width=\textwidth]{Hardware/hardware_setup.png}
     \centering
     \caption{Hardware setup for controlling the T-Rex, with Arduino, electric pressure control valves, and compressor.}
@@ -76,7 +67,7 @@ Early TrussFormer prototypes used electric actuators, instead of the pneumatic o
 \subsection{Pneumatic Actuators}
 We use different kinds of pneumatic actuators, depending on the force needed. Our actuators usually have a piston diameter of 20 - 35 mm and can extend from 40 cm to 80 cm. This length works well with our bottle links, which are 60 cm long, meaning that the middle position of the actuator makes it the same length as the links.\\
 A common actuator that could be used is the Festo DSNU round cylinder with a diameter of 32 mm and a hub of 30 cm, as shown in Figure \ref{fig:festo_cylinder}. This cylinder can operate with up to 10 bars, the following values were measured with 6 bars of pressure and at room temperature. Under these circumstances, this actuator can achieve an extension rate of up to 2.3 m/s (without load) with a force of 480N on the extending stroke and 415N on retraction. This force is sufficient for moving the head of our T-Rex up and down, which is the motion requiring the most force in our design. For higher loads, e.g. lifting a human, an actuator with a bigger diameter should be used. A Festo actuator with a diameter of 50 mm is capable of achieving up to 1200 N of force on the extending stroke at 6 bars.
-\begin{figure}[h!]
+\begin{figure}[ht!]
     \includegraphics[width=\textwidth]{Hardware/festo_cylinder.png}
     \centering
     \caption{A Festo DSNU cylinder with 32 mm cylinder diameter and 30 cm of hub, as used in our T-Rex.}
@@ -89,10 +80,10 @@ We control the pneumatic actuators using a MIDI control interface. The slider in
 \subsection{Valves}
 We used two different kinds of valves. \textit{Proportional pressure regulators}, such as the Festo VPPM, are used for open-loop pressure control. Communication to these regulators is achieved with an IO link, which can be connected to a control unit. Digital signals are translated to a proportional opening of the valves, providing a constant and reliable pressure. VPPMs have one input and one output valve. This fact differentiates proportional pressure regulators from \textit{proportional directional control valves}, like the Festo MPYE. These valves have one input, but two outputs, making it possible to connect it to both inputs of a pneumatic actuator. Controlling these valves works similar to proportional pressure regulators and also uses a simple IO link. Digital signals send to this type of valve do not, however, only control the pressure of these outputs, but also the ratio between these two outputs. This makes positional control of actuators possible.
 
-\begin{figure}[h!]
-    \includegraphics[width=\textwidth]{Hardware/valves.JPG}
+\begin{figure}[ht!]
+    \includegraphics[width=\textwidth]{Hardware/valves.png}
     \centering
-    \caption{TEMPORARY(left) A proportional pressure regulator with one input and one output. (right) A proportional directional control valve, having one input and two outputs. Both can be attached to an IO link on the top.}
+    \caption{(left) A proportional pressure regulator with one input and one output. (right) A proportional directional control valve, with one input and two outputs. Both can be attached to an IO link on the top.}
     \label{fig:valves}
 \end{figure}
 
@@ -104,10 +95,10 @@ Using this approach, we can have closed-loop control of the actuators, making it
 \subsubsection{PID Controller}
 we created a rudimentary motion-platform using closed-loop PID control (s.a. Section \ref{sec:pid}). The motion platform has three modes. It starts fully extended, applying a little bit of pressure to keep the actuator upright, but little enough that a human sitting on it pushed it back. If the actuator reached an extension of 10 cm, the control loop applied a holding force, making it possible to sit on the platform without it moving. If the person on the platform applied more force, pushing the piston further down, the third mode activated, which made it oscillate up and down.
 
-\begin{figure}[h!]
-    \includegraphics[width=\textwidth]{Hardware/position_controller.JPG}
+\begin{figure}[ht!]
+    \includegraphics[width=\textwidth]{Hardware/position_controller.png}
     \centering
-    \caption{TEMPORARY We use a badge holder with a rotary encoder for position sensing. The string of the holder is attached to the actuators body and the extending piston. On extension, the string will roll off the spindle, which we can measure with the encoder and translate into a length.}
+    \caption{We use a badge holder with a rotary encoder for position sensing. The string of the holder is attached to the actuators body and the extending piston. On extension, the string will roll off the spindle, which we can measure with the encoder and translate into a length.}
     \label{fig:position_control}
 \end{figure}
 

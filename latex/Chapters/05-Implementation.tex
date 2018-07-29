@@ -59,7 +59,7 @@ The last high-level component in TrussFormer is the \textit{Triangle}. A Triangl
 \subsection{SketchupObjects}
 As mentioned before, each GraphObject contains a lower-level \textit{SketchupObject}. These objects are responsible for more complex, lower-level tasks, such as physics calculations, rendering and communication to the simulation engine.\\
 Each SketchupObject has a \textit{Sketchup::Entity}, which is a class provided by SketchUp that is capable of handling the representation in SketchUp itself. This includes changing the color of the model, hiding and transforming.
-\begin{figure}[h!]
+\begin{figure}[ht!]
     \includegraphics[width=\textwidth]{Implementation/TrussFormer_SketchupObjects.png}
     \centering
     \caption{Class Diagram showing the UI components of the graph structure}
@@ -242,7 +242,7 @@ The load function takes this generated JSON and recreates the graph according to
 The relaxation algorithm is used to propagate the change of an edge over the whole structure. This way, we can adapt edges organically and precisely, minimizing the change in adjacent edges.\\
 If we want to elongate an edge, we give this edge a new \textit{optimal length}. This length and the edge itself is stored internally in the relaxation class. With this information, the actual relaxation algorithm is triggered. For a set number of iterations, 20'000 in our case, the algorithm will pick an edge out of the stored set randomly and checks if its current length differs from its optimal length, if any is set. If no optimal length is set or the deviation is sufficiently little, the next edge will be investigated. For the first iteration, the only edge in the set will be the one we want to elongate or shrink. All edges connected to the same nodes as this edge will also be added to the set and the node positions of the edge will be adapted to achieve the targeted length, damped by a factor to receive a more natural end result over more iterations. The direction vector of the edge will stay the same. That means, that other edges will change their lengths as well during this step.\\
 During the next iteration of the loop, another edge in the set, now containing the incident edges as well, will undergo this process; checking if it needs to change it length, adding its incidents to the set and bringing the nodes closer to the optimal length. At some point, all edges will be sufficiently close to their targeted length or the maximum number of iterations will be reached.\\
-When this step is reached, we have to update the sketchup representations according to the data we collected in the internal storage of the relaxation, in order to visualize the result to the user.
+When this step is reached, we have to update the SketchUp representations according to the data we collected in the internal storage of the relaxation, in order to visualize the result to the user. The result can be seen in Figure \ref{fig:relax}.
 
 \begin{lstlisting}[language=Ruby, label={lst:relaxation}, caption=The relaxation algorithm]
 def relax
@@ -264,21 +264,11 @@ def relax
 end
 \end{lstlisting}
 
-\begin{figure}[ht]
-  \centering
-  \begin{minipage}[t]{5cm}
+\begin{figure}[ht!]
+    \includegraphics[height=120px]{Implementation/relax.png}
     \centering
-    \includegraphics[height=120px]{Implementation/relax_one.png}
-    \captionof{figure}{The relaxation algorithm applied with only one iteration. The extension of the lower right edge resulted in growing incident edges as well.}
-    \label{fig:leg_asset}
-  \end{minipage}%
-  \vspace{3cm}
-  \begin{minipage}[t]{5cm}
-    \centering
-    \includegraphics[height=120px]{Implementation/relax_many.png}
-    \captionof{figure}{The relaxation algorithm applied with up to 20'000 iterations. Growing the lower right edge caused other nodes to translate, but the lengths of incident edges stayed the same.}
-    \label{fig:spider_in_progress}
-  \end{minipage}
+    \caption{(a) The relaxation algorithm applied with only one iteration. The extension of the lower right edge resulted in growing incident edges as well. (b) The relaxation algorithm applied with up to 20'000 iterations. Growing the lower right edge caused other nodes to translate, but the lengths of incident edges stayed the same.}
+    \label{fig:relax}
 \end{figure}
 
 \subsection{Animation}
@@ -325,12 +315,6 @@ During this update, the physics engine calculates new forces on each physics com
 After each world update, the tensions on each link are recorded for visualizing them later. This has to be done, because there could potentially be multiple world updates per render step and we do not want to miss crucial forces.\\
 These steps in \textit{update\_world} are done for a specified number of times. In regular animation mode, one world update is calculated per frame, however some tools use the simulation in the background for static checks or other calculations. These tools do not need to display the in-between steps, so they can calculate multiple world updates back-to-back.\\
 With the knowledge of the new physics calculations, we can send information about the stress level of each joint to SketchUp. We color the links depending on the tension force on them. A blue color means negative tension force, i.e. pulling force, while red color means positive force, i.e. compressing force. The higher the force, the deeper the color gets.\\
-\begin{figure}[h!]
-    \includegraphics[width=\textwidth]{Implementation/Forces.png}
-    \centering
-    \caption{TEMPORARY Visualization of forces acting on edges. Blue - tension force, red - compression force, white - little or no force}
-    \label{fig:force_visualization}
-\end{figure}
 Once the physics portion of the rendering step is done, our own graph structure has to be updated. For that, each edge and node updates its positions and transformations based on their internal physics objects.\\
 As a last step, sensor data is sent to JavaScript in order to draw a chart depicting physical data.
 
@@ -350,7 +334,7 @@ The P and I terms will already achieve a reasonable result. The derivative term 
 
 \subsection{Evaluation}
 We aimed to make our software simulation as accurate to the real-world object as possible. To calibrate the simulation values, we therefore measured the forces of our T-Rex example.\\
-\begin{figure}[h!]
+\begin{figure}[ht!]
     \includegraphics[width=\textwidth]{Implementation/force_measurement.png}
     \centering
     \caption{(a) We measured the forces on the bottom front edge of the T-Rex (b) using a digital force gauge. (c) The measured forces agree with the simulated forces.}
@@ -364,46 +348,45 @@ The export functionality consists of multiple steps. First, the system determine
 
 \subsection{Hinge Placement Routine}\label{sec:hinge_placement_impl}
 We use an empirical approach to determine the placement of hinges. As a first step, all adjacent edges will be connected using an intermediate link connection, as illustrated using blue lines in Figure \ref{fig:intermediate_hinges}. This provides 2 DoF between all edges, behaving as if they were connected by ball joints. This result will always work. However, in variable geometry trusses, most of the edges are confined in triangles and larger rigid substructures, therefore not all movements are possible. Placing unnecessary hinges only adds complexity for assembly and reduces mechanical stability.\\
-\begin{figure}[h!]
+\begin{figure}[ht!]
     \includegraphics[width=\textwidth]{Implementation/intermediate_hinges.png}
     \centering
     \caption{(a) Octahedron with an actuator, still with rigid hubs. (b) After the first step, intermediate links are assigned inside all triangles, creating spherical joints.}
     \label{fig:intermediate_hinges}
 \end{figure}
 Using the physics engine, we now move all actuators, one after another, and measure the angular difference between adjacent triangles. If the difference stays below a certain threshold, the common node of these two triangles is considered part of a \textit{rigid substructure}. Figure \ref{fig:static_substructure}a shows the rigid substructures identified in the octahedron, visualized in distinct colors. The triangles containing the actuator are not considered rigid, since their internal angles are changing. Figure \ref{fig:static_substructure}b shows the result of this step on the example of the T-Rex. Here, instead of the triangles, the edges of rigid substructures are colored for clarity.\\
-\begin{figure}[h!]
+\begin{figure}[ht!]
     \includegraphics[width=\textwidth]{Implementation/octa_trex_rigid.JPG}
     \centering
     \caption{TrussFormer identified the rigid substructures (a) in the octahedron from Figure 20, and (b) in the T-Rex.}
     \label{fig:static_substructure}
 \end{figure}
 Now that TrussFormer knows which parts of the structure are rigid, it can remove the unnecessary hinges between the edges which belong to the same rigid substructure and don’t move in regards to each other. In Figure \ref{fig:reduced_hinges} we show this step on our octahedron example. Between the edges forming rigid substructures, the intermediate link connections (former blue lines) are reduced to rigid connections (black lines). Rigid substructures can still rotate in respect to each other. At this stage, the final hinge chain is already found for the octahedron example and the resulting 3D print is shown in Figure \ref{fig:reduced_hinges}b.
-\begin{figure}[h!]
+\begin{figure}[ht!]
     \includegraphics[width=\textwidth]{Implementation/reduced_hinges.png}
     \centering
     \caption{(a) The intermediate hinge connections are reduced to rigid connections where rigid substructures are identified (black lines). (b) The fabricated hinging hub of the marked node of the octahedron.}
     \label{fig:reduced_hinges}
 \end{figure}
 At this point, TrussFormer has already assigned an optimized valid hinge configuration, however, not all the connections might be physically possible to assemble. TrussFormer’s hinge design
-has the limitation that it only supports one-on-one hinge connections. Three way connections are not possible, i.e. three parts cannot physically hinge
-around the same axis.
-However, after Step 3, there might be hubs violating this condition, e.g. where three hinges are meeting at the same axis. We demonstrate this case in Figure \ref{fig:triple_connection} on the example of the double-octahedra structure with one actuator, similar to the one found in the body of the T-rex. In Figure \ref{fig:triple_connection}b we highlight the hub where a three-way hinge connection is present after performing the hinge reduction. Fortunately, these connections are redundant in TrussFormer’s kinetic structures, and they can be resolved by eliminating some of the hinges, while still maintaining the hub’s structural integrity, i.e., all the edges remain interconnected via a continuous hinge chain.
-\begin{figure}[h!]
+has the limitation that it only supports one-on-one hinge connections. Three way connections are not possible, i.e. three parts cannot physically hinge around the same axis.
+However, after reducing the number of hinges, there might be hubs violating this condition, e.g. when three hinges are meeting at the same axis. We demonstrate this case in Figure \ref{fig:triple_connection} on the example of the double-octahedron structure with one actuator, similar to the one found in the body of the T-Rex. In Figure \ref{fig:triple_connection}b we highlight the hub where a three-way hinge connection is present after performing the hinge reduction. Fortunately, these connections are redundant in TrussFormer’s kinetic structures, and they can be resolved by eliminating some of the hinges, while still maintaining the hub’s structural integrity, i.e. all the edges remain interconnected via a continuous hinge chain.
+\begin{figure}[ht!]
     \includegraphics[width=\textwidth]{Implementation/triple_connection.png}
     \centering
     \caption{(a) Double-octahedral structure, where (b) violating three-way hinge connections appear. (c-d) TrussFormer finds the valid configurations by heuristic elimination and (d) chooses the structurally more stable closed chain.}
     \label{fig:triple_connection}
 \end{figure}
-TrussFormer resolves violating connections using a backtracking algorithm that removes connections heuristically. After each removed connection, it checks the validity of the resulting hinge configuration for two constraints: (1) all edges around the node are still interconnected directly or indirectly with each other, and (2) no more than two hinges are connected at each axis. If these constraints are satisfied, a valid hinge configuration was found. The algorithm continues until it finds all valid configurations. If available, TrussFormer will select the configuration with closed hinge chain (Figure \ref{fig:triple_connection}d) over open chain (Figure \ref{fig:triple_connection}c), for stability reasons.
+TrussFormer resolves violating connections using a backtracking algorithm that removes connections heuristically. After each removed connection, it checks the validity of the resulting hinge configuration for two constraints: (1) all edges around the node are still interconnected directly or indirectly with each other, and (2) no more than two hinges are connected at each axis. If these constraints are satisfied, a valid hinge configuration was found. The algorithm continues until it finds all valid configurations. If available, TrussFormer will select the configuration with a closed hinge chain (Figure \ref{fig:triple_connection}d) over an open chain (Figure \ref{fig:triple_connection}c), for stability reasons.
 
 \subsection{Generating the 3D Models}\label{sec:openscad_impl}
 In order to get printable files, our abstract description of the object has to be converted into a physical representation. To achieve this, we use a modeling language called \textit{OpenSCAD}. After finding all hinge chains and static hubs, the resulting arrangement of nodes and edges will be transferred to OpenSCAD. OpenSCAD enables us to create 3D structures programmatically. We use it to create 3-dimensional primitives, such as spheres, cubes or cylinders, and to apply set operations, like \textit{difference} or \textit{union} on them.\\
 OpenSCAD provides an editor which can be used to prototype a model. This editor, including some example operations can be seen in Figure \ref{fig:openscad_overview}. We used this editor to create template functions used for creating the final hinge and hub models.\\
-\begin{figure}[h!]
+\begin{figure}[ht!]
     \includegraphics[width=\textwidth]{Implementation/openscad_overview.png}
     \centering
     \caption{The OpenSCAD editor containing some example code.}
-    \label{fig:force_measurement}
+    \label{fig:openscad_overview}
 \end{figure}
 Our hinging and static hubs are fully parameterized. This way we make sure that all parts will fit together exactly in the final object. Hub configurations, such as the angle, the elongation, the ID, ..., are inserted into a template file and define the shape of the printed hub.
 
