@@ -89,19 +89,18 @@ We used two different kinds of valves. \textit{Proportional pressure regulators}
 
 \subsection{Position Sensing}
 The MIDI controller is a well working possibility to control actuators. It is, however, an open-loop control, meaning it can not react to external influences, like weight shifts or additional pressure acting on edges. This is not a big problem for our T-Rex example, as it usually moves undisturbed and without external interaction. If we want to create an interactive object, this will not be sufficient.\\
-Pneumatic actuators on their own tend to not have the possibility to measure their own rate of extension. We therefore created an easy to build distance sensor, using a string on a spindle. One side of the string is attached to the piston part of the actuator, while the spindle is attached to the static body. While the actuator extends, the spindle will spin, releasing more string. We attached a rotary encoder to the spindle, counting its rotations. Using the diameter of the reel, we can calculate how much string was released during the extension, which correlates to the extension of the piston itself.\\
-Using this approach, we can have closed-loop control of the actuators, making it possible to constantly monitor its extension and apply force accordingly.
-
-\subsubsection{PID Controller}
-we created a rudimentary motion-platform using closed-loop PID control (s.a. Section \ref{sec:pid}). The motion platform has three modes. It starts fully extended, applying a little bit of pressure to keep the actuator upright, but little enough that a human sitting on it pushed it back. If the actuator reached an extension of 10 cm, the control loop applied a holding force, making it possible to sit on the platform without it moving. If the person on the platform applied more force, pushing the piston further down, the third mode activated, which made it oscillate up and down.
-
+Pneumatic actuators on their own tend to not have the possibility to measure their own rate of extension. We therefore created an easy to build distance sensor, using a string on a spindle. One side of the string is attached to the piston part of the actuator, while the spindle is attached to the static body. While the actuator extends, the spindle will spin, releasing more string. We attached a rotary encoder to the spindle, counting its rotations. Using the diameter of the reel, we can calculate how much string was released during the extension, which correlates to the extension of the piston itself. A prototype of this method can be seen in Figure \ref{fig:position_control}.\\
 \begin{figure}[ht!]
     \includegraphics[width=\textwidth]{Hardware/position_controller.png}
     \centering
     \caption{We use a badge holder with a rotary encoder for position sensing. The string of the holder is attached to the actuators body and the extending piston. On extension, the string will roll off the spindle, which we can measure with the encoder and translate into a length.}
     \label{fig:position_control}
 \end{figure}
+Using this approach, we can have closed-loop control of the actuators, making it possible to constantly monitor its extension and apply force accordingly.
 
-\subsection{Arduino/Controllino}
-Also for our control module we have different approaches for open and closed loop control. Open loop control can be achieved with a simple \textit{Arduino}. It can be attached to a control interface, such as our MIDI controller, and translate the given inputs into signals for the valves.\\
-Another logic controller we used is the \textit{Controllino}.\todo{Why do we use it? What can it do actually?}
+\subsubsection{PID Controller}
+We created a rudimentary motion-platform using closed-loop PID control (s.a. Section \ref{sec:pid}). The motion platform has three modes. It starts fully extended, applying a little bit of pressure to keep the actuator upright, but little enough that a human sitting on it pushed it back. If the actuator reached an extension of 10 cm, the control loop applied a holding force, making it possible to sit on the platform without it moving. If the person on the platform applied more force, pushing the piston further down, the third mode activated, which made it oscillate up and down.
+
+\subsection{Control Units}
+For our control module we have different approaches for open and closed loop control, as well. Open loop control can be achieved with a simple \textit{Arduino}. It can be attached to a control interface, such as our MIDI controller, and translate the given inputs into signals for the valves.\\
+Another logic controller we used is the \textit{Controllino}.

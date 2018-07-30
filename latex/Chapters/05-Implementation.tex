@@ -189,7 +189,7 @@ The shortest distance will be returned and compared to the result of other edges
 After all edges are tested, the latest candidate will be turned into an actuator and the view is updated for the user.\\
 This method works as a naïve approximation, meaning it does not guarantee that the desired position will be reached exactly.
 
-\begin{lstlisting}[language=Ruby, label={lst:pose_check}, caption=The test\_piston method changes each edge into an actuator\, tests its movement and determines how close it brings a selected node to a desired position.]
+\begin{lstlisting}[language=Ruby, label={lst:test_piston}, caption=The test\_piston method changes each edge into an actuator\, tests its movement and determines how close it brings a selected node to a desired position.]
   def test_pistons
     closest_distance = Float::INFINITY
     best_piston = nil
