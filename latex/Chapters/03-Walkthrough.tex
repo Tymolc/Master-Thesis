@@ -26,9 +26,8 @@ For settling the object on the ground or placing a cover on a triangle face, Tru
     \label{fig:modelling_t-rex}
 \end{figure}
 
-\subsection{Check static forces} \todo{Split into checking static forces and dynamic forces? Probably explain the add weight tool here, as well}
-Using the animation pane, the user can determine static forces acting on the structure.
-(((The weight of each node, which plays a big role in the force distribution, is calculated based on the number of edges connected to it and whether it is a hinge or a hub. If the user decides that certain nodes will have more load, these can be fitted with additional weight using the \textit{Add Weight Tool}. (12))))
+\subsection{Check static forces}
+Using the animation pane, the user can determine static forces acting on the structure. TrussFormer provides tools for adding weight to the structure. In the case of our T-Rex, users might want to add decoration with a weight of 5 kg to its head. The select the \textit{Add Weight Tool} (6) and select a node. After that, they click the \textit{Play} (Figure \ref{fig:animation} (12)) button in the animation window. Our built-in simulation will visualize occurring forces and check if the structure is capable of withstanding the additional force.
 
 \section{Adding Movement to the Structures}
 Movement is added to the structure by placing special physics links. These links act like linear actuators - struts that can extend and retract in a straight line. There are multiple methods for placing these actuators, ranging from a fully-automated way to manual placement.
@@ -79,7 +78,7 @@ The control elements of the animation window always work on the whole group. The
     \centering
     \caption{Animating the structure. Users sets the desired pose using the sliders in the animation pane and orchestrate the movement by placing key-frames on the timeline. Each timeline controls actuators with the same color.}
     \label{fig:animation}
-\end{figure}\todo{Redo with actuator groups and numbers}
+\end{figure}
 To add a keyframe to the animation pane, first the slider has to be moved to the desired position. The object will start to move according to the sliders position - if the slider is at the top, the actuator will be fully extended and vice versa. That way, the user can visualize the extend of the movement. If the user is satisfied, the indicator line can be moved to the desired position in the timeline and the diamond button is pressed to add this keyframe to the animation.
 
 \subsection{Checking Dynamic Forces}
@@ -128,11 +127,11 @@ As a last step, specifications containing information about the force, speed and
 Each exported file represents a single part in the structure. These files can easily be converted to \textit{.stl} files, which are typically used for 3D printing. Using a 3D printing software, the 3D objects can be arranged and sent to a 3D printer. Printing of one hinge part using an UltiMaker 3 printer takes about 40 minutes.
 
 \subsection{Assembling the Structure}
-The resulting hubs and hinges contain an ID system for easy assembly. Each part of a node has the node ID printed on. That way it is easy to find out which hinge-parts belong together. Additionally, each edge elongation contains the id of the connected edge. A compound elongation, which is the usual case for a hinge, is therefore assembled by finding two parts with the same node and edge ID. For static hubs, this concept is similar.\\
-Two connectors with different node IDs but the same edge IDs will be connected by a link.
+The resulting hubs and hinges contain an ID system for easy assembly. Each part of a node has the node ID printed on. That way it is easy to find out which hinge-parts belong together. Additionally, each edge elongation contains the id of the connected edge. Two hinge parts with the same node ID and edge ID will be connected.\\
+Two connectors with different node IDs but the same edge IDs will be connected by an edge.
 \begin{figure}[ht!]
     \includegraphics[width=\textwidth]{Walkthrough/hinge.png}
     \centering
-    \caption{A hinge}
+    \caption{Two hinge parts connected. Both belong to Node 14 (N14) and their connection has the ID V8, indicating that this is an intermediate hinge connection (explained in Section \ref{sec:hinges}). The left connector will be linked by Edge 14.}
     \label{fig:hinge}
-\end{figure}\improvement{This will be a better image.}
+\end{figure}
