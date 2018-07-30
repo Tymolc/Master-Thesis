@@ -7,7 +7,7 @@ After explaining the architecture, this chapter will demonstrate the tools and f
 The software can be divided into four components. The most user-facing one is the TrussFormer Editor. It contains the user interface and the construction functionalities. The other components can be seen as extensions to the editor. The \textit{Force Analysis} calculates tension forces on the created structure, using an adapted version of the \textit{MSPhysics} \cite{MSPhysics} physics engine, which is a Ruby wrapper around the C++ physics engine \textit{NewtonDynamics} \cite{newtondynamics}.\\
 This physics engine is also used by another component: the \textit{Export Functionality}. It uses the physics features to detect changing angles between edges, indicating the need for a hinging hub.
 \begin{figure}[!h]
-    \includegraphics[width=\textwidth]{Implementation/TrussFormer_Architecture_Overview.png}
+    \includegraphics[width=\textwidth]{Implementation/TrussFormer_Architecture.png}
     \centering
     \caption{TrussFormer Architecture}
     \label{fig:architecture}
@@ -216,8 +216,6 @@ This method works as a naïve approximation, meaning it does not guarantee that 
     create_actuator(best_piston)
   end
 \end{lstlisting}
-
-\subsubsection{Correct Forces}
 
 \subsection{Load/Save}
 In order to save created objects and work on them later, TrussFormer provides a save and load function. The save function stores the current geometry in \ac{JSON} files. On activation of the tool, a message box appears, asking the user to select a surface, which will be used to attach the object to existing geometry or to place it on the floor, on import.\\

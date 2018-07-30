@@ -65,7 +65,7 @@ The limited pressure is tunneled to a valve terminal. This terminal opens and cl
 Early TrussFormer prototypes used electric actuators, instead of the pneumatic ones we used for the T-Rex. Electric actuators can produce a fairly large force and are easier to control, as they can usually provide their current extension. However, at around 0.03 m/s they extend very slowly, compared to our pneumatic actuators, which can reach more than 2 m/s. As our structures are fairly lightweight, the force of the actuators is not a big concern, while the higher speed of pneumatic actuators enables us to create more dynamic structures.
 
 \subsection{Pneumatic Actuators}
-We use different kinds of pneumatic actuators, depending on the force needed. Our actuators usually have a piston diameter of 20 - 35 mm and can extend from 40 cm to 80 cm. This length works well with our bottle links, which are 60 cm long, meaning that the middle position of the actuator makes it the same length as the links.\\
+We use different kinds of pneumatic actuators, depending on the force needed. Our actuators usually have a piston diameter of 20 - 35 mm and can extend 30 - 40 cm. This length works well with our bottle links, which are 60 cm long, meaning that the middle position of the actuator makes it the same length as the links.\\
 A common actuator that could be used is the Festo DSNU round cylinder with a diameter of 32 mm and a hub of 30 cm, as shown in Figure \ref{fig:festo_cylinder}. This cylinder can operate with up to 10 bars, the following values were measured with 6 bars of pressure and at room temperature. Under these circumstances, this actuator can achieve an extension rate of up to 2.3 m/s (without load) with a force of 480N on the extending stroke and 415N on retraction. This force is sufficient for moving the head of our T-Rex up and down, which is the motion requiring the most force in our design. For higher loads, e.g. lifting a human, an actuator with a bigger diameter should be used. A Festo actuator with a diameter of 50 mm is capable of achieving up to 1200 N of force on the extending stroke at 6 bars.
 \begin{figure}[ht!]
     \includegraphics[width=\textwidth]{Hardware/festo_cylinder.png}
@@ -103,4 +103,4 @@ We created a rudimentary motion-platform using closed-loop PID control (s.a. Sec
 
 \subsection{Control Units}
 For our control module we have different approaches for open and closed loop control, as well. Open loop control can be achieved with a simple \textit{Arduino}. It can be attached to a control interface, such as our MIDI controller, and translate the given inputs into signals for the valves.\\
-Another logic controller we used is the \textit{Controllino}.
+Another logic controller we used is the \textit{Controllino}. It provides more inputs and outputs, than a conventional Arduino and offers additional security mechanisms.
