@@ -3,9 +3,9 @@ The system presented in this paper makes use of a variety of mechanical componen
 Furthermore, this chapter will define the techniques and hardware employed in the structures.
 
 \section{Mechanical Components}
-We can differentiate between three essential building parts for our truss objects. We call the structural components \textit{Links}. In our objects PET bottles are used as links, as they are readily available, cheap and sturdy.\\
+We can differentiate between three essential building parts for our truss objects. We call the structural components \textit{links}. In our objects PET bottles are used as links, as they are readily available, cheap and sturdy.\\
 We have two different ways of connecting links. Rigid connections are comprised of \textit{static hubs}. For dynamic connections, i.e. connections that allow movement of the structure, we use \textit{hinging hubs}.\\
-Links, and static or hinging hubs are connected by purpose-designed \textit{cuffs}, which fit over the bottles' thread on one side and a connector part on the hub on the other side, as seen in Figure \ref{fig:connector} (b).
+Links, and static or hinging hubs are connected by purpose-designed \textit{cuffs}, which fit over the bottle's thread on one side and a connector part on the hub on the other side, as seen in Figure \ref{fig:connector} (b).
 
 \subsection{Edges of the structure}
 We opted to use 1l (big) and 0.5l (small) reusable PET bottles because they have thicker walls, providing more stability and are abundantly available. Two bottles are connected on their bottom side by a wood screw, which is inserted using a special long-necked screwdriver. This process is depicted in Figure \ref{fig:connect_bottles}. The resulting link-lengths are:
@@ -22,10 +22,10 @@ We opted to use 1l (big) and 0.5l (small) reusable PET bottles because they have
     \label{fig:connect_bottles}
 \end{figure}
 
-\subsection{Rigid Hubs}
-We call the connecting parts \textit{Hubs}. These hubs are designed to withstand loads in the range of a human weight. Earlier tests show, that the bottle links we use can withstand a compression force of around 85 kg.\\
+\subsection{Rigid hubs}
+We call the connecting parts \textit{hubs}. These hubs are designed to withstand loads in the range of a human weight. Earlier tests show, that the bottle links we use can withstand a compression force of around 85 kg.\\
 Hubs are solid one-piece objects that can connect two or more links. They therefore have two or more regions that can hold the neck of a bottle. We call these regions \textit{connectors}. These connectors consist of a flat part, slightly wider (30 mm) than the bottle openings outer diameter (28 mm) and an extrusion in the middle, the size of its inner diameter (20 mm). The extrusion is plugged into the bottle opening, giving a snug fit and good lateral stability.\\
-To prevent the bottles from slipping out, a \textit{cuff} is clipped over the connector and the bottle opening. The cuff is designed as a circular section, slightly larger than a semicircle. Its upper and lower end have different sizes: the smaller end fits over a rim on the hub connector, the larger one over an extrusion on the bottle neck. Due to its flexibility, the cuff acts like a spring, making it easy to clip over the bottle and connector, while giving enough stability once clipped on.
+To prevent the bottles from slipping out, a \textit{cuff} is clipped over the connector and the bottle opening, as shown in Figure \ref{fig:connector}b. The cuff is designed as a circular section, slightly larger than a semicircle. Its upper and lower end have different sizes: the smaller end fits over a rim on the hub connector, the larger one over an extrusion on the bottle neck. Due to its flexibility, the cuff acts like a spring, making it easy to clip over the bottle and connector, while giving enough stability once clipped on.
 
 \begin{figure}
     \includegraphics[width=\textwidth]{Hardware/connectors.png}
@@ -35,8 +35,8 @@ To prevent the bottles from slipping out, a \textit{cuff} is clipped over the co
 \end{figure}
 
 \subsection{Hinging Hubs}\label{sec:hinges}
-In order to introduce movement to truss structures, we came across some challenges. Multiple links have to be able to pivot around a common hub. This kind of spherical motion can potentially be achieved using ball joints, however these joints typically only allow for a connection of two links without causing obstruction.\\
-We solve this issue by using a \textit{spherical joint mechanism}. As can be seen in Figure \ref{fig:hinge_chain}, these chains of hinges can connect multiple link, which can all rotate around the same center. This is possible, because the axes of rotation do not occupy the rotational center itself, creating room for movement.\\
+In order to introduce movement to truss structures, we came across some challenges. Multiple links have to be able to pivot around a common center. This kind of spherical motion can potentially be achieved using ball joints, however these joints typically only allow for a connection of two links without causing obstruction.\\
+We solve this issue by using a \textit{spherical joint mechanism} \cite{sofla:2009, spinos2:2017}. As can be seen in Figure \ref{fig:hinge_chain}, these chains of hinges can connect multiple links, which can all rotate around the same center. This is possible, because the axes of rotation do not occupy the rotational center itself, creating room for movement.\\
 \begin{figure}[ht!]
     \includegraphics[width=\textwidth]{Hardware/hinge_chain.png}
     \centering
@@ -44,11 +44,11 @@ We solve this issue by using a \textit{spherical joint mechanism}. As can be see
     \label{fig:hinge_chain}
 \end{figure}
 We started out using an open hinge chain, meaning that the chain had special end parts which were only connected on one side. This gave us a lot of freedom of movement, however it turned out that this design was not strong enough for our needs and frequently broke during testing builds of the T-Rex. This required us to rethink our design and we came up with a closed hinge chain design.\\
-The degrees of freedom (DoF), our hinge system needs to have, underly constraints, allowing us to limit the possible movement of the hinges. The original spherical joint mechanism shown in Figure \ref{fig:hinge_chain}a connected all edges using two hinges, allowing for 2 DoF. This is not necessary if we are dealing with truss structures. An example of TrussFormers's hinge design can be seen in Figure \ref{fig:hinge_chain}b. Only edge 4 is connected to its neighboring edges using two intermediate hinges. All other edges only require rotation (resulting in 1 DoF).\\
+The degrees of freedom our hinge system needs to have, underly constraints, allowing us to limit the possible movement of the hinges. The original spherical joint mechanism shown in Figure \ref{fig:hinge_chain}a connected all edges using two hinges, allowing for 2 DoF. This is not necessary if we are dealing with truss structures. An example of TrussFormers's hinge design can be seen in Figure \ref{fig:hinge_chain}b. Only edge 4 is connected to its neighboring edges using two intermediate hinges. All other edges only require rotation (resulting in 1 DoF).\\
 The hinge chains are arranged automatically in the structure by our TrussFormer system. This heuristic approach will be described in more detail in Section \ref{sec:hinge_placement_impl}.
 
 \subsubsection{3D printing}
-The hubs and connecting cuffs are printed using consumer-grade desktop FDM\footnote{Fused Deposition Modeling} 3D printers. The filament consists of PLA\footnote{Polylactic acid} plastic and the printed objects have a 15\% infill with a wall thickness of 3 mm. We chose PLA filament instead of ABS\footnote{Acrylonitrile butadiene styrene} primarily because it is easier to handle. ABS plastic, while being stronger, needs to be printed on a heated surface, which not many mid-range printers have. As we designed the TrussFormer system for 3D-printing enthusiasts and not professionals, we wanted to target owners of consumer-grade printers. Additionally, PLA consists of organic materials (mainly cornstarch and sugarcane), which makes it biodegradable, as opposed to ABS plastic, which is oil-based.\\
+The hubs and connecting cuffs are printed using consumer-grade desktop \ac{FDM} 3D printers. The filament consists of \ac{PLA} plastic and the printed objects have a 15\% infill with a wall thickness of 3 mm. We chose PLA filament instead of \ac{ABS} primarily because it is easier to handle. ABS plastic, while being stronger, needs to be printed on a heated surface, which not many mid-range printers have. As we designed the TrussFormer system for 3D-printing enthusiasts and not professionals, we wanted to target owners of consumer-grade printers. Additionally, PLA consists of organic materials (mainly cornstarch and sugarcane), which makes it biodegradable, as opposed to ABS plastic, which is oil-based.\\
 A hub consumes about 50-150g of filament, resulting in a cost of 1-3€.
 
 \section{Actuation}
@@ -78,7 +78,7 @@ A common actuator that could be used is the Festo DSNU round cylinder with a dia
 We control the pneumatic actuators using a MIDI control interface. The slider inputs are sent to an Arduino which translates them to control signals for digitally controllable pressure valves. The actuators have two connections for air pipes: one for extending the actuator and one for retracting it. The signal from the slider is interpreted as a mixture between these two inputs, with the slider at the top meaning that all the air is send to the extending input and the slider at the bottom completely retracting it.
 
 \subsection{Valves}
-We used two different kinds of valves. \textit{Proportional pressure regulators}, such as the Festo VPPM, are used for open-loop pressure control. Communication to these regulators is achieved with an IO link, which can be connected to a control unit. Digital signals are translated to a proportional opening of the valves, providing a constant and reliable pressure. VPPMs have one input and one output valve. This fact differentiates proportional pressure regulators from \textit{proportional directional control valves}, like the Festo MPYE. These valves have one input, but two outputs, making it possible to connect it to both inputs of a pneumatic actuator. Controlling these valves works similar to proportional pressure regulators and also uses a simple IO link. Digital signals send to this type of valve do not, however, only control the pressure of these outputs, but also the ratio between these two outputs. This makes positional control of actuators possible.
+We used two different kinds of valves. \textit{Proportional pressure regulators}, such as the Festo VPPM (Figure \ref{fig:valves} (left)), are used for open-loop pressure control. Communication to these regulators is achieved with an IO link, which can be connected to a control unit. Digital signals are translated to a proportional opening of the valves, providing a constant and reliable pressure. VPPMs have one input and one output valve. This fact differentiates proportional pressure regulators from \textit{proportional directional control valves}, like the Festo MPYE (Figure \ref{fig:valves} (right)). These valves have one input, but two outputs, making it possible to connect it to both inputs of a pneumatic actuator. Controlling these valves works similar to proportional pressure regulators and also uses a simple IO link. Digital signals send to this type of valve do not, however, only control the pressure of these outputs, but also the ratio between these two outputs. This makes positional control of actuators possible.
 
 \begin{figure}[ht!]
     \includegraphics[width=\textwidth]{Hardware/valves.png}

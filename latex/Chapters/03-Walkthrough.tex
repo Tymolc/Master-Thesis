@@ -1,18 +1,17 @@
-
 \chapter{Walkthrough}\label{ch:walkthrough}
 \begin{figure}[ht!]
     \includegraphics[width=.7\textwidth]{Walkthrough/UI.png}
     \centering
-    \caption{TrussFormers' toolbar}
+    \caption{TrussFormer's toolbar}
     \label{fig:toolbar}
 \end{figure}
-This chapter will present the functionalities of the system by showing the process of creating the T-Rex shown in Figure \ref{fig:examples} (c). This will include all steps from creating the static structure, over introducing animation up to fabricating the final object.
+This chapter will present the functionalities of the system by showing the process of creating the T-Rex shown in Figure \ref{fig:examples} (c). This will include all steps from creating the static structure, over introducing animation, up to fabricating the final object.
 
 \section{Designing Static Structures}
 As shown in Figure \ref{fig:modelling_t-rex}, the T-Rex model was first created as a stable static structure. With the help of TrussFormer, the user can make sure that the object to be created is structurally sound before adding motion. The provided tools can create sturdy primitives that are attached to each other, deform the structure, and check forces acting on each part of the object.
 
 \subsection{Primitives}
-Users can use predefined and structurally stable primitives to create their objects. Our system provides tools for creating octahedra and tetrahedra (Figure \ref{fig:toolbar} (1)). These truss primitives consist entirely of triangular faces, which is an essential property for stable objects and widely used in heavy industry and architecture, e.g. cranes or bridges.
+Users can use predefined and structurally stable primitives to create their objects. Our system provides tools for creating octahedra and tetrahedra (Figure \ref{fig:toolbar} (1)). These truss primitives consist entirely of triangular faces, which is an essential property for stable objects and widely used in heavy industry and architecture, e.g. for cranes or bridges.
 
 \subsection{How they are used}
 The primitives can be attached to existing triangle faces, as seen in Figure \ref{fig:modelling_t-rex} or placed on the ground. If necessary, our system can also create single links between two nodes using the bottle link tool (2).\\
@@ -27,13 +26,13 @@ For settling the object on the ground or placing a cover on a triangle face, Tru
 \end{figure}
 
 \subsection{Check static forces}
-Using the animation pane, the user can determine static forces acting on the structure. TrussFormer provides tools for adding weight to the structure. In the case of our T-Rex, users might want to add decoration with a weight of 5 kg to its head. The select the \textit{Add Weight Tool} (6) and select a node. After that, they click the \textit{Play} (Figure \ref{fig:animation} (12)) button in the animation window. Our built-in simulation will visualize occurring forces and check if the structure is capable of withstanding the additional force.
+Using the animation pane, the user can determine static forces acting on the structure. TrussFormer provides tools for adding weight to the structure. In the case of our T-Rex, users might want to add decoration with a weight of 5 kg to its head. They select the \textit{Add Weight Tool} (6) and click a node. After that, they use the \textit{Play button} (Figure \ref{fig:animation} (12)) in the animation window. Our built-in simulation will visualize occurring forces and check if the structure is capable of withstanding the additional weight.
 
 \section{Adding Movement to the Structures}
-Movement is added to the structure by placing special physics links. These links act like linear actuators - struts that can extend and retract in a straight line. There are multiple methods for placing these actuators, ranging from a fully-automated way to manual placement.
+Movement is added to the structure by placing special physics edges. These edges act like linear actuators - struts that can extend and retract in a straight line. There are multiple methods for placing these actuators, ranging from a fully-automated way to manual placement.
 
 \subsection{Automatic Actuator Placement}
-The automated way works by demonstrating a desired movement. The user selects the \textit{Demonstrate Movement Tool} (6), clicks a node that should experience a certain movement and drags a line to the desired end position. TrussFormer will then search for an actuator that brings the node closest to the desired position and turns the resulting edge into an actuator. The tool runs through all edges of the structure, replacing one after another with an actuator and simulates the resulting movement in the background. The actuator that solves the problem the best will be placed.
+The automated way works by demonstrating a desired movement. The user selects the \textit{Demonstrate Movement Tool} (6), clicks a node that should experience a certain movement and drags a line to the desired end position, as seen in Figure \ref{fig:demonstrate_movement}. TrussFormer will then search for an actuator that brings the node closest to the desired position and turns the resulting edge into an actuator. The tool runs through all edges of the structure, replacing one after another with an actuator and simulates the resulting movement in the background. The actuator that solves the problem the best will be placed.
 \begin{figure}[ht!]
     \includegraphics[width=\textwidth]{Walkthrough/demonstrate_movement_tool.png}
     \centering
@@ -47,7 +46,7 @@ Instead of using the demonstrate movement tool to create the nodding motion of t
 \begin{figure}[ht!]
     \includegraphics[width=\textwidth]{Walkthrough/assets_white-01.png}
     \centering
-    \caption{A selection of assets: (a) tetrahedron with 1DoF, (b) “robotic leg” asset, (c) hinging tetrahedra, (d) octahedron with 1DoF, (e) Stewart platform (6DoF), and (f) double-octahedron performing “bending” motion.}
+    \caption{A selection of assets: (a) tetrahedron with 1DoF, (b) “robotic leg” asset, (c) hinging tetrahedron, (d) octahedron with 1DoF, (e) Stewart platform (6DoF), and (f) double-octahedron performing “bending” motion.}
     \label{fig:dynamic_assets}
 \end{figure}
 
@@ -56,7 +55,7 @@ The manual actuator placement requires the most knowledge about the resulting mo
 \begin{figure}[ht!]
     \includegraphics[width=\textwidth]{Walkthrough/manual_actuator_placement.png}
     \centering
-    \caption{The turn edge to actuator tool allows users to turn any edge into an actuator. Here user replaces one edge in the T-Rex’s head to make its jaws move.}
+    \caption{The turn edge to actuator tool allows users to turn any edge into an actuator. Here the user replaces one edge in the T-Rex’s head to make its jaws move.}
     \label{fig:manual_actuator}
 \end{figure}
 
@@ -71,7 +70,7 @@ To completely prevent breaking, this process would have to be done for each comb
 \end{figure}
 
 \section{Animation}\label{sec:animation}
-The user can actuate the physics links in two different ways. The \textit{animation window} provides a slider for manual movement Figure \ref{fig:animation} (9), as well as an animation pane which allows placing keyframes (10) and provides two playback modes (11). All actuators have an actuator group assigned to them. Per default, an actuator is placed in its own, empty group. Using the actuator tool (Figure \ref{fig:toolbar} (8), already used for placing actuators, this group can be changed. This is indicated by the actuator changing its color.\\
+The user can actuate the physics links in two different ways. The \textit{animation window} provides a slider for manual movement (Figure \ref{fig:animation} (9)), as well as an animation pane which allows placing keyframes (10) and provides two playback modes (11). All actuators have an actuator group assigned to them. Per default, an actuator is placed in its own, empty group. Using the actuator tool (Figure \ref{fig:toolbar} (8)), already used for placing actuators, this group can be changed. This is indicated by the actuator changing its color.\\
 The control elements of the animation window always work on the whole group. The color of the animation line indicates which group will be actuated by either the slider or the keyframes.
 \begin{figure}[ht!]
     \includegraphics[width=\textwidth]{Walkthrough/animating_the_structure.png}
@@ -79,12 +78,12 @@ The control elements of the animation window always work on the whole group. The
     \caption{Animating the structure. Users sets the desired pose using the sliders in the animation pane and orchestrate the movement by placing key-frames on the timeline. Each timeline controls actuators with the same color.}
     \label{fig:animation}
 \end{figure}
-To add a keyframe to the animation pane, first the slider has to be moved to the desired position. The object will start to move according to the sliders position - if the slider is at the top, the actuator will be fully extended and vice versa. That way, the user can visualize the extend of the movement. If the user is satisfied, the indicator line can be moved to the desired position in the timeline and the diamond button is pressed to add this keyframe to the animation.
+To add a key\-frame to the animation pane, first the slider has to be moved to the desired position. The object will start to move according to the sliders position - if the slider is at the top, the actuator will be fully extended and vice versa. That way, the user can visualize the extent of the movement. If the user is satisfied, the indicator line can be moved to the desired position in the timeline and the diamond button is pressed to add this keyframe to the animation.
 
 \subsection{Checking Dynamic Forces}
-If the structure fulfills the desired motion, the user will want to check if the forces created during executing it will not exceed the breaking force of the object. A lot of factors play a role in the formation of forces. These range from weight forces over lever forces to inertial forces. TrussFormer aids the user to detect weak points and force peaks during a motion in different ways.\\
+If the structure fulfills the desired motion, the user will want to check if the forces created during executing it will not exceed the breaking force of the object. A lot of factors play a role in the formation of forces. These range from weight forces over lever forces to inertial forces. TrussFormer aids the user in detecting weak points and force peaks during a motion in different ways.\\
 TrussFormer's tools provide the possibility to constantly monitor the forces that occur during interactive movement of the structure. In simulation mode, all edges will be colored red or blue in increasing intensity the higher the force on them is. Red indicates compression force, while blue means tension force. A completely white color indicates a force of $0 N$. These tension forces are automatically calculated by the built-in physics engine.\\
-As shown in Figure \ref{fig:fix_breaking} (a) the user creates an animation that moves the T-Rex body down and up again. (b) While TrussFormer plays the animation, it calculates the forces. The change from the downwards motion to going up again causes a lot of contraction force on the edges on the front body side. The neck of the T-Rex acts as a lever, which leads to very high inertial forces. This motion eventually exceeds the breaking limit of the structure, (c) causing the construction to fail. The time of breaking is indicated in the animation pane by a red vertical line. This failure is hard to predict by the user, because inertial forces can be multiple times higher than the static forces, checked during the creation of the T-Rex. (d) TrussFormer helps the user to fix the motion. A popup is opened providing two possibilities (Figure \ref{fig:correcting_animation}): fixing the animation by reducing the speed or reducing the motion. If the first option is chosen, TrussFormer will elongate the animation sequence for all piston groups. This results in a slower movement and less force on the structure. The second option will keep the length of the animation, but move the keyframes closer to the center line. The amplitude of the motion will be decreased this way.\\
+As shown in Figure \ref{fig:fix_breaking} (a) the user creates an animation that moves the T-Rex body down and up again. (b) While TrussFormer plays the animation, it calculates the forces. The change from the downwards motion to going up again causes a lot of contraction force on the edges on the front body side. The neck of the T-Rex acts as a lever, which leads to very high inertial forces. This motion eventually exceeds the breaking limit of the structure, (c) causing the construction to fail. The time of breaking is indicated in the animation pane by a red vertical line. This failure is hard to predict by the user, because inertial forces can be multiple times higher than the static forces, checked during the creation of the T-Rex. (d) TrussFormer helps the user to fix the motion. A popup is opened providing two possibilities (Figure \ref{fig:correcting_animation}): fixing the animation by reducing the speed or reducing the motion. If the first option is chosen, TrussFormer will elongate the animation sequence for all piston groups. This results in a slower movement and less force on the structure. The second option will keep the length of the animation, but move the keyframes closer to the center line. The amplitude of the motion will be decreased.\\
 Both versions will reduce the acceleration of the structure. The force formula $F = m * a$ shows, that the force increases proportionally with the acceleration, as the mass is constant in the structure. Reducing acceleration also reduces the force.
 \begin{figure}[ht!]
     \includegraphics[width=\textwidth]{Walkthrough/forces-01.png}
@@ -119,8 +118,8 @@ When users are satisfied with their design (structure, movement, and animation),
     \label{fig:export_and_hinges}
 \end{figure}
 
-TrussFormers' hinge generation procedure will analyze the structure, ensuring that the final object has the maximum possible movement and creates 3D printable hinge and hub geometries. The T-Rex consists of 42 3D printed hubs and 135 unique hinge pieces.\\
-Next, the animation pattern is exported to Arduino code. The user can upload this code directly to their microcontroller.\\
+TrussFormer's hinge generation procedure will analyze the structure, ensuring that the final object has the maximum possible movement and creates 3D printable hub geometries. The T-Rex consists of 42 3D printed hubs and 135 unique hinge pieces. An example can be seen in Figure \ref{fig:export_and_hinges}.\\
+Next, the animation pattern is exported to Arduino code. The user can upload this code directly to their micro controller.\\
 As a last step, specifications containing information about the force, speed and motion range of the actuators necessary for achieving the desired animation pattern, are created. Actuators that fulfill these requirements can be obtained as standardized components. The specifications also include information about the number and size of screws needed for assembly.
 
 \subsection{Printing the Parts}
@@ -132,6 +131,6 @@ Two connectors with different node IDs but the same edge IDs will be connected b
 \begin{figure}[ht!]
     \includegraphics[width=\textwidth]{Walkthrough/hinge.png}
     \centering
-    \caption{Two hinge parts connected. Both belong to Node 14 (N14) and their connection has the ID V8, indicating that this is an intermediate hinge connection (explained in Section \ref{sec:hinges}). The left connector will be linked by Edge 14.}
+    \caption{Two connected hinge parts. Both belong to hub 16 (\textit{N16}). Their connection has the ID \textit{V8}, indicating that this is an intermediate hinge connection (explained in Section \ref{sec:hinges}). The left connector will be linked with edge 14.}
     \label{fig:hinge}
 \end{figure}
