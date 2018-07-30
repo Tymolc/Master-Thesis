@@ -27,6 +27,7 @@ Each of these objects has access to its underlying logic-bearing component, call
 The GraphObject class is responsible for unifying how the appearance of the object in SketchUp is modified. This includes highlighting the object if the mouse hovers over it, resetting the object to its default state, and creating and deleting it. More complex methods are implemented in the respective subclass.
 \subsubsection{Nodes}
 \textit{Nodes} are the connecting components of the structure. \textit{Edges}, as well as \textit{triangles} are created based on nodes. Apart from storing adjacent edges and triangles, a Node can specify its positions in the SketchUp world. The node's adjacent objects constantly check if these positions have changed and update their SketchUp representation accordingly. If the structure is deformed in such a way that a Node will be at the same position as another one, both nodes will merge. To do this, the Node will iterate over all its adjacent edges and tell each one to exchange itself with the Node it wants to merge into. Excluded are the edges that run from the other Node to the Edge the Node is hinging around (i.e. the Edge that is opposite the Node). These edges are removed from the node's adjacent edges and added to the collection of the new Node. The same happens for all adjacent triangles. As a last step, the Node deletes itself and all remaining adjacent edges and triangles (which will be the edges and triangles that got merged) (s.a. \ref{lst:merging_code}). The object will then be adapted according to the new positions using the \textit{Relaxation algorithm}, described in section \ref{sec:relaxation}.
+\clearpage
 \begin{lstlisting}[language=Ruby, label={lst:merging_code}, caption=Merging of two nodes]
   def merge_into(other_node)
     merged_incidents = []
@@ -184,7 +185,7 @@ For each combination of actuator positions, the actuator parameters are set to t
 
 \subsubsection{Automatic Actuator Placement}
 The \textit{Automatic Actuator Placement} tool is the most supporting method in creating motion in the truss structure. Users can demonstrate the movement they want to achieve by dragging a node to a certain position. The tool will automatically turn the edge into an actuator that can move the selected node closest to the desired position.\\
-The process behind it iteratively turns an edge into an actuator, moves it to its maximum and minimum position using the physics simulation and observes the selected node for position changes. This is done for each edge individually. Each actuator is tested for two seconds in the background. Similar to the pose checking tool, this simulation is ``headless'', meaning forces are not visualized. Fixed edges, i.e. edges that are connected to pods, will not be tested. After each world update, the position of the observed node is compared to the desired position and if the distance is less than in a previous world update, this distance is stored. The distance is calculated using the following formula:
+The process behind it iteratively turns an edge into an actuator, moves it to its maximum and minimum position using the physics simulation and observes the selected node for position changes. This is done for each edge individually. Each actuator is tested for two seconds in the background. Similar to the pose checking tool, this simulation is ``headless'', meaning forces are not visualized. Fixed edges, i.e. edges that are connected to pods, will not be tested. After each world update, the position of the observed node is compared to the desired position and if the distance is less than in a previous world update, this distance is stored. The distance is calculated using the formula:
 \begin{equation}
   d(P1, P2) = \sqrt{(P1_x - P2_x)^2 + (P1_y - P2_y)^2 + (P1_z - P2_z)^2}
 \end{equation}
@@ -196,7 +197,6 @@ This method works as a naïve approximation, meaning it does not guarantee that 
 \begin{lstlisting}[language=Ruby, label={lst:test_piston}, caption=The test\_piston method changes each edge into an actuator\, tests its movement and determines how close it brings a selected node to a desired position.]
   def test_pistons
     closest_distance = Float::INFINITY
-    best_piston = nil
     Graph.instance.edges.each_value do |edge|
       next if edge.fixed?
       previous_link_type = edge.link_type
@@ -293,8 +293,9 @@ As actuators in a group can have different lengths, they will only receive the $
 \section{Physics Simulation}\label{sec:simulation}
 TrussFormer's force analysis used to be based on \textit{Finite Element Analysis}, calculated asynchronously on a remote server. This provided fairly accurate results and did not require a powerful computer to run. However, TrussFormer's responsibilities evolved during the course of its life and we decided to implement a real-time physics engine inside of our plug-in.\\
 We decided to use the SketchUp plug-in \textit{MSPhysics} by Anton Synytsia\footnote{https://github.com/AntonSynytsia/}. MSPhysics is capable of calculating real-time physics on SketchUp elements and creates a customizable physics world in the modeling software. This MSPhysics world has parameters, like gravity, update timestep, and solver model which we can adapt to maximize accuracy and speed of the simulation.\\
-The simulation uses the animation feature of SketchUp. A ruby class can act as a Sketchup::Animation when it implements the \textit{nextFrame} method, which must return true until the animation ends. This method is called every time SketchUp receives the signal that a new frame should be rendered. We do that by calling \textit{view.show\_frame} (s.a. listing \ref{lst:simulation}), which will trigger SketchUp to start rendering the next frame based on the simulation updates that happened earlier. We call this function as the first step in our nextFrame method, because this way, SketchUp can start rendering, while our simulation does the next physics update.\\
-\begin{lstlisting}[language=Ruby, label={lst:simulation}, caption=Simulation nextFrame method]
+The simulation uses the animation feature of SketchUp. A ruby class can act as a Sketchup::Animation when it implements the \textit{nextFrame} method, which must return true until the animation ends. This method is called every time SketchUp receives the signal that a new frame should be rendered. We do that by calling \textit{view.show\_frame} (s.a. listing \ref{lst:simulation}), which will trigger SketchUp to start rendering the next frame based on the simulation updates that happened earlier. We call this function as the first step in our nextFrame method, because this way, SketchUp can start rendering, while our simulation does the next physics update.
+\clearpage
+\begin{lstlisting}[language=Ruby, label={lst:simulation}, caption=Simulation::nextFrame method]
 def nextFrame(view)
     view.show_frame
     return @running unless @running && !@paused
@@ -391,20 +392,3 @@ OpenSCAD provides an editor which can be used to prototype a model. This editor,
     \label{fig:openscad_overview}
 \end{figure}
 Our hinging and static hubs are fully parameterized. This way we make sure that all parts will fit together exactly in the final object. Hub configurations, such as the angle, the elongation, the ID, ..., are inserted into a template file and define the shape of the printed hub.
-
-\begin{figure}[ht]
-  \centering
-  \begin{minipage}[t]{5cm}
-    \centering
-    \includegraphics[height=120px]{Implementation/hinge_lengths.png}
-    \captionof{figure}{TEMPORARY L1 and L2 lenghts of a hinge part}
-    \label{fig:leg_asset}
-  \end{minipage}%
-  \vspace{3cm}
-  \begin{minipage}[t]{5cm}
-    \centering
-    \includegraphics[height=120px]{Implementation/hinge_l3.png}
-    \captionof{figure}{L3 length of a connector}
-    \label{fig:spider_in_progress}
-  \end{minipage}
-\end{figure}
