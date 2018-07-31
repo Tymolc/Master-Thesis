@@ -126,7 +126,7 @@ As a last step, specifications containing information about the force, speed and
 Each exported file represents a single part in the structure. These files can easily be converted to \textit{.stl} files, which are typically used for 3D printing. Using a 3D printing software, the 3D objects can be arranged and sent to a 3D printer. Printing of one hinge part using an UltiMaker 3 printer takes about 40 minutes.
 
 \subsection{Assembling the Structure}
-The resulting hubs and hinges contain an ID system for easy assembly. Each part of a node has the node ID printed on. That way it is easy to find out which hinge-parts belong together. Additionally, each edge elongation contains the id of the connected edge. Two hinge parts with the same node ID and edge ID will be connected.\\
+The resulting hubs and hinges contain an ID system for easy assembly. Each part of a node has the node ID printed on. That way it is easy to find out which hinge-parts belong together. Additionally, each edge elongation contains the id of the connected edge. Two hinge parts with the same node ID and edge ID will be connected, as can be seen in Figure \ref{fig:hinge}.\\
 Two connectors with different node IDs but the same edge IDs will be connected by an edge.
 \begin{figure}[ht!]
     \includegraphics[width=\textwidth]{Walkthrough/hinge.png}

@@ -4,7 +4,7 @@ The user interface is implemented in JavaScript, using the node.js framework for
 After explaining the architecture, this chapter will demonstrate the tools and functionalities in greater detail and explain the underlying components.
 
 \section{Architecture}
-The software can be divided into four components. The most user-facing one is the TrussFormer Editor. It contains the user interface and the construction functionalities. The other components can be seen as extensions to the editor. The \textit{Force Analysis} calculates tension forces on the created structure, using an adapted version of the \textit{MSPhysics} \cite{MSPhysics} physics engine, which is a Ruby wrapper around the C++ physics engine \textit{NewtonDynamics} \cite{newtondynamics}.\\
+The software can be divided into four components. The most user-facing one is the TrussFormer Editor. It contains the user interface and the construction functionalities. The other components can be seen as extensions to the editor. The \textit{Force Analysis} calculates tension forces on the created structure, using an adapted version of the \textit{MSPhysics} \cite{msphysics} physics engine, which is a Ruby wrapper around the C++ physics engine \textit{NewtonDynamics} \cite{newtondynamics}.\\
 This physics engine is also used by another component: the \textit{Export Functionality}. It uses the physics features to detect changing angles between edges, indicating the need for a hinging hub.
 \begin{figure}[!h]
     \includegraphics[width=\textwidth]{Implementation/TrussFormer_Architecture.png}
@@ -101,7 +101,7 @@ Our user interface has four distinct modules:
     \item context menus
 \end{itemize}
 
-Each of these modules consists of a number of HTML and JavaScript files, which implement the design and functionality of the UI elements, and one Ruby file. The Ruby file is a proxy that communicates between the JavaScript side and the rest of the system. It subscribes to JavaScript callbacks, to react to UI interactions, and can directly execute JavaScript code to pass data from Ruby to the UI elements.
+Each of these modules consists of a number of HTML and JavaScript files, which implement the design and functionality of the UI elements, and one Ruby file. The Ruby file is a proxy that communicates between the JavaScript side and the rest of the system. It subscribes to Ja\-va\-Script callbacks, to react to UI interactions, and can directly execute JavaScript code to pass data from Ruby to the UI elements.
 \begin{lstlisting}[language=Ruby, label={lst:ui_proxy}, caption=excerpt from UI callbacks]
 Class AnimationPane
   def add_piston(id)
@@ -194,7 +194,7 @@ The shortest distance will be returned and compared to the result of other edges
 After all edges are tested, the latest candidate will be turned into an actuator and the view is updated for the user.\\
 This method works as a naïve approximation, meaning it does not guarantee that the desired position will be reached exactly.
 
-\begin{lstlisting}[language=Ruby, label={lst:test_piston}, caption=The test\_piston method changes each edge into an actuator\, tests its movement and determines how close it brings a selected node to a desired position.]
+\begin{lstlisting}[language=Ruby, label={lst:test_piston}, caption={The test\_piston method changes each edge into an actuator, tests its movement and determines how close it brings a selected node to a desired position.}]
   def test_pistons
     closest_distance = Float::INFINITY
     Graph.instance.edges.each_value do |edge|
